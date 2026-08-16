@@ -27,13 +27,16 @@ Label: wayfinder:map
 - [GitHub repo + Pages setup](issues/06-github-repo.md) — `Ali-Maken/gym-logger` (public) live; Pages serves https://ali-maken.github.io/gym-logger/ from `main`/`docs`; base-href `/gym-logger/` fixed forever; `gh` not installed.
 - [Architecture blueprint](issues/09-architecture-blueprint.md) — one deep `Logbook` seam over private Dexie + pure domain fns; signals-first, commit-then-signal write-through; tests = domain fns + Logbook vs fake-indexeddb.
 - [Session screen prototype](issues/08-session-screen-prototype.md) — four layouts prototyped and ALL ship as selectable `SessionView` adapters (user's call); default = Sheet; theme-token system in scope; blueprint amended accordingly.
+- [Fold decisions into SPEC.md](issues/10-fold-into-spec.md) — SPEC.md rewritten as v2, build-ready; destination reached.
 - [Research: Angular PWA on GitHub Pages, offline-first](issues/07-research-pwa-pages.md) — Angular v22; ngsw handles `/REPO/` base-href natively (never rename the repo); use hash routing over the 404.html trick; `docs/` + `.nojekyll`; ngsw cache-busts past the Pages CDN's 10-min cache; iOS home-screen apps dodge the 7-day purge and `persist()` (Safari 15.2+) blocks eviction — but keep manual export as backstop.
 
 ## Not yet specified
 
-- **Home & History screen design polish** — whether they need their own prototype passes; sharpens once the session-screen prototype settles the app's visual identity.
-- **Exact seed-table values** (ids, groups, machine notes, targets) — mechanical once the dose model, duration entries, and ambiguous exercises are decided; folds into the final spec revision.
-- **Progression-hint presentation** — how "↑ add weight" surfaces without clutter; likely settles inside the session-screen prototype, may graduate if contentious.
+*(empty — all fog graduated: seed values and hint presentation folded into SPEC.md v2; Home/History design follows the theme tokens and layout identities settled by the prototype.)*
+
+## Status: DESTINATION REACHED (2026-08-16)
+
+All tickets resolved. `SPEC.md` v2 is build-ready; building follows its build order, outside this map.
 
 ## Out of scope
 

@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import {
   formatDaysAgo,
   start,
@@ -37,6 +37,11 @@ export function HomePage() {
           <TemplateCard key={t.id} template={t} suggested={t.id === suggested} onStart={handleStart} />
         ))}
       </div>
+      <nav className="home-foot">
+        <Link to="/history" className="home-foot-link lbl">
+          History
+        </Link>
+      </nav>
     </main>
   )
 }

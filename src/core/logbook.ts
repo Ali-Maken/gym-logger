@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { db } from './db'
-import { validateExportPayload } from './domain/exportPayload'
+import { summarizePayload, validateExportPayload } from './domain/exportPayload'
 import { shouldSuggestWeightIncrease } from './domain/hint'
 import { selectLastTime } from './domain/lastTime'
 import { lastFinishedAt, suggestTemplate } from './domain/rotation'
@@ -19,7 +19,16 @@ import type {
 // mutations (Dexie first, store second — the never-lose-data guarantee).
 // Pure display helpers and types are re-exported so features need nothing else.
 
-export { formatDaysAgo, formatLastResult, formatLogLine, formatTarget, topWeight } from './domain/format'
+export {
+  formatDaysAgo,
+  formatDuration,
+  formatLastResult,
+  formatLogLine,
+  formatSessionDate,
+  formatTarget,
+  topWeight,
+} from './domain/format'
+export { listFinished } from './domain/history'
 export type {
   Exercise,
   LoggedExercise,
@@ -222,6 +231,14 @@ export function exportJson(): string {
     prefs,
   }
   return JSON.stringify(payload, null, 2)
+}
+
+/**
+ * Dry-run of an import: parses and shape-checks, returning the summary line
+ * for the confirm step ('14 sessions, Aug 1–16'). Throws on invalid input.
+ */
+export function previewImport(json: string): string {
+  return summarizePayload(validateExportPayload(JSON.parse(json)))
 }
 
 /**

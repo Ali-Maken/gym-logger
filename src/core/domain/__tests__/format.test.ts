@@ -1,5 +1,14 @@
 import { describe, expect, it } from 'vitest'
-import { formatDaysAgo, formatLastResult, formatLogLine, formatTarget, topWeight } from '../format'
+import {
+  formatDateRange,
+  formatDaysAgo,
+  formatDuration,
+  formatLastResult,
+  formatLogLine,
+  formatSessionDate,
+  formatTarget,
+  topWeight,
+} from '../format'
 import type { Exercise, LoggedExercise } from '../types'
 
 const legPress: Exercise = { id: 'leg-press', name: 'Leg press', group: 'legs', measure: 'weightReps' }
@@ -82,6 +91,34 @@ describe('formatDaysAgo', () => {
   it('splits on midnight, not on 24-hour gaps', () => {
     const justAfterMidnight = new Date(2026, 7, 17, 0, 10).getTime()
     expect(formatDaysAgo(new Date(2026, 7, 16, 23, 50).getTime(), justAfterMidnight)).toBe('yesterday')
+  })
+})
+
+describe('formatSessionDate', () => {
+  const now = new Date(2026, 7, 17).getTime()
+
+  it('shows weekday, day, month; year only when it differs from now', () => {
+    expect(formatSessionDate(new Date(2026, 7, 16, 18, 30).getTime(), now)).toBe('Sun 16 Aug')
+    expect(formatSessionDate(new Date(2025, 11, 31).getTime(), now)).toBe('Wed 31 Dec 2025')
+  })
+})
+
+describe('formatDuration', () => {
+  it('rounds to minutes and switches to hours past 60', () => {
+    expect(formatDuration(0, 48 * 60_000)).toBe('48 min')
+    expect(formatDuration(0, 65 * 60_000)).toBe('1 h 05 min')
+    expect(formatDuration(0, 29_000)).toBe('0 min')
+  })
+})
+
+describe('formatDateRange', () => {
+  it('collapses within a month, spells out across months and years', () => {
+    expect(formatDateRange(new Date(2026, 7, 1).getTime(), new Date(2026, 7, 16).getTime())).toBe('Aug 1–16')
+    expect(formatDateRange(new Date(2026, 7, 5).getTime(), new Date(2026, 7, 5).getTime())).toBe('Aug 5')
+    expect(formatDateRange(new Date(2026, 7, 28).getTime(), new Date(2026, 8, 3).getTime())).toBe('Aug 28 – Sep 3')
+    expect(formatDateRange(new Date(2025, 11, 30).getTime(), new Date(2026, 0, 2).getTime())).toBe(
+      'Dec 30 2025 – Jan 2 2026',
+    )
   })
 })
 

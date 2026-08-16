@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { validateExportPayload } from '../exportPayload'
+import { summarizePayload, validateExportPayload } from '../exportPayload'
+import type { ExportPayload, Session } from '../types'
 
 const validPayload = () => ({
   version: 1,
@@ -47,5 +48,23 @@ describe('validateExportPayload', () => {
     const badNumber = validPayload()
     badNumber.sessions[0]!.startedAt = Number.NaN
     expect(() => validateExportPayload(badNumber)).toThrow(/startedAt is not a number/)
+  })
+})
+
+describe('summarizePayload', () => {
+  const session = (id: string, startedAt: number): Session => ({ id, templateId: 'a', startedAt, exercises: [] })
+  const payload = (sessions: Session[]): ExportPayload => ({ version: 1, sessions, templates: [], prefs: {} })
+
+  it('counts sessions and spans their start dates', () => {
+    const sessions = [
+      session('s1', new Date(2026, 7, 16).getTime()),
+      session('s2', new Date(2026, 7, 1).getTime()),
+    ]
+    expect(summarizePayload(payload(sessions))).toBe('2 sessions, Aug 1–16')
+  })
+
+  it('handles empty and singular payloads', () => {
+    expect(summarizePayload(payload([]))).toBe('0 sessions')
+    expect(summarizePayload(payload([session('s1', new Date(2026, 7, 5).getTime())]))).toBe('1 session, Aug 5')
   })
 })

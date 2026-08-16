@@ -1,4 +1,14 @@
+import { formatDateRange } from './format'
 import type { ExportPayload, LoggedExercise, Session, SetEntry, Template, TemplateEntry, TemplateId } from './types'
+
+/** The line shown before the restore confirm: '14 sessions, Aug 1–16'. */
+export function summarizePayload(payload: ExportPayload): string {
+  const n = payload.sessions.length
+  const count = `${n} session${n === 1 ? '' : 's'}`
+  if (n === 0) return count
+  const starts = payload.sessions.map((s) => s.startedAt)
+  return `${count}, ${formatDateRange(Math.min(...starts), Math.max(...starts))}`
+}
 
 /**
  * Shape-checks an unknown value (parsed JSON) into an ExportPayload.

@@ -53,6 +53,36 @@ export function formatLogLine(exercise: Exercise, logged: LoggedExercise): strin
   return parts.filter((p) => p !== undefined && p !== '').join('  ')
 }
 
+const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+/** History-row date: 'Sun 17 Aug', with the year appended once it differs from now's. */
+export function formatSessionDate(ts: number, now: number): string {
+  const d = new Date(ts)
+  const base = `${WEEKDAYS[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]}`
+  return d.getFullYear() === new Date(now).getFullYear() ? base : `${base} ${d.getFullYear()}`
+}
+
+/** Compact range for the import summary: 'Aug 1–16', 'Aug 28 – Sep 3', 'Dec 30 2025 – Jan 2 2026'. */
+export function formatDateRange(fromTs: number, toTs: number): string {
+  const from = new Date(fromTs)
+  const to = new Date(toTs)
+  const sameYear = from.getFullYear() === to.getFullYear()
+  const year = (d: Date) => (sameYear ? '' : ` ${d.getFullYear()}`)
+  if (sameYear && from.getMonth() === to.getMonth()) {
+    const days = from.getDate() === to.getDate() ? `${from.getDate()}` : `${from.getDate()}–${to.getDate()}`
+    return `${MONTHS[from.getMonth()]} ${days}`
+  }
+  return `${MONTHS[from.getMonth()]} ${from.getDate()}${year(from)} – ${MONTHS[to.getMonth()]} ${to.getDate()}${year(to)}`
+}
+
+/** Session duration: '48 min', '1 h 05 min'. */
+export function formatDuration(startedAt: number, finishedAt: number): string {
+  const minutes = Math.max(0, Math.round((finishedAt - startedAt) / 60_000))
+  if (minutes < 60) return `${minutes} min`
+  return `${Math.floor(minutes / 60)} h ${String(minutes % 60).padStart(2, '0')} min`
+}
+
 /** Home-card recency label: 'never', 'today', 'yesterday', 'N days ago'. Calendar days, local time. */
 export function formatDaysAgo(finishedAt: number | undefined, now: number): string {
   if (finishedAt === undefined) return 'never'

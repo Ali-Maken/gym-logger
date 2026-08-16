@@ -86,6 +86,7 @@ function SheetPanel(props: { row: SessionRowVm } & SessionViewProps) {
         <span className="sv-sheet-t">
           <span className="sv-nm">{row.exercise.name}</span>{' '}
           <span className="sv-dose mono">{row.targetLabel}</span>
+          {row.hint && !row.done && <span className="sv-hint mono"> ↑ add weight</span>}
           <span className="sv-last mono">
             last: {row.lastLabel}
             {row.lastSetup ? ` · ${row.lastSetup}` : ''}

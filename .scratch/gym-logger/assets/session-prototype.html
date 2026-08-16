@@ -1,0 +1,386 @@
+<!-- PROTOTYPE — throwaway. Three structurally different session screens for the
+     Gym Logger, switchable via ?variant= or the floating pill / arrow keys.
+     One shared in-memory session state (Workout B) drives all three. -->
+<title>Gym Logger Session Lab</title>
+<style>
+  :root{
+    --chalk:#E6E7E2; --chalk2:#DDDED8; --card:#F2F2EE; --ink:#191C1B;
+    --iron:#585E60; --hairline:#C6C8C1;
+    --blue:#1B5480; --red:#9E2F2F; --green:#2F6B4A;
+    --ink-card:#222625; --ink-line:#3A3F3E; --chalk-on-ink:#D9DBD6;
+    --display:system-ui,sans-serif;
+    --body:system-ui,sans-serif;
+    --mono:ui-monospace,'JetBrains Mono',SFMono-Regular,Menlo,monospace;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0}
+  body{background:var(--chalk2);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45}
+  button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+  button:focus-visible,[tabindex]:focus-visible,input:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+  input{font:inherit;color:inherit}
+
+  /* phone column */
+  .phone{max-width:420px;min-height:100dvh;margin:0 auto;background:var(--chalk);
+    box-shadow:0 0 0 1px var(--hairline);position:relative;display:flex;flex-direction:column}
+
+  .mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+  .disp{font-family:var(--display);font-weight:800;text-transform:uppercase;letter-spacing:-.02em}
+  .lbl{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--iron)}
+
+  /* ============ prototype switcher (not part of the design) ============ */
+  .proto{position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:99;
+    display:flex;align-items:center;gap:2px;background:#111;color:#fff;border-radius:999px;
+    padding:4px 6px;box-shadow:0 4px 14px rgba(0,0,0,.35);font-family:var(--mono);font-size:12px}
+  .proto button{color:#fff;padding:4px 10px;border-radius:999px;font-size:14px;line-height:1}
+  .proto button:hover{background:#333}
+  .proto span{padding:0 6px;white-space:nowrap}
+
+  /* ================= VARIANT A · Ledger ================= */
+  .vA .a-head{background:var(--ink);color:var(--chalk);padding:14px 18px 12px}
+  .vA .a-head .disp{font-size:19px}
+  .vA .a-head .lbl{color:#9BA09E;margin-bottom:2px}
+  .vA .list{flex:1;overflow-y:auto;padding-bottom:110px}
+  .vA .row{border-bottom:1px solid var(--hairline);background:var(--card)}
+  .vA .row.done{background:var(--chalk);opacity:.55}
+  .vA .row-h{width:100%;display:flex;align-items:center;gap:12px;padding:14px 16px;text-align:left;min-height:64px}
+  .vA .row-h .st{flex:0 0 22px;width:22px;height:22px;border:1.5px solid var(--iron);border-radius:3px;position:relative}
+  .vA .row.done .row-h .st{background:var(--green);border-color:var(--green)}
+  .vA .row.done .row-h .st::after{content:"";position:absolute;left:7px;top:3px;width:5px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(42deg)}
+  .vA .nm{font-weight:600}
+  .vA .last{font-family:var(--mono);font-size:12.5px;color:var(--iron);margin-top:2px}
+  .vA .dose{font-family:var(--mono);font-size:13px;font-weight:700;margin-left:auto;white-space:nowrap}
+  .vA .hint{display:inline-block;font-family:var(--mono);font-size:11px;color:var(--green);font-weight:700;margin-left:6px}
+  .vA .x-body{padding:4px 16px 16px;border-top:1px dashed var(--hairline)}
+  .vA .setup{display:flex;align-items:center;gap:8px;margin:10px 0 6px}
+  .vA .setup input{width:90px;border:1px solid var(--hairline);border-radius:4px;padding:7px 9px;background:#fff;font-family:var(--mono);font-size:14px}
+  .vA .set{display:flex;align-items:center;gap:8px;padding:7px 0}
+  .vA .set .n{width:20px;font-family:var(--mono);font-size:12px;color:var(--iron)}
+  .stp{display:flex;align-items:center;border:1px solid var(--hairline);border-radius:6px;background:#fff;overflow:hidden}
+  .stp button{width:44px;height:46px;font-size:22px;color:var(--iron);display:grid;place-items:center}
+  .stp button:active{background:var(--chalk2)}
+  .stp .v{min-width:64px;text-align:center;font-family:var(--mono);font-size:16px;font-weight:700}
+  .stp .v small{font-size:10px;color:var(--iron);font-weight:400;display:block;margin-top:-2px}
+  .tick{flex:0 0 52px;height:46px;border-radius:6px;border:1.5px solid var(--green);color:var(--green);font-size:20px;display:grid;place-items:center;margin-left:auto}
+  .tick.on{background:var(--green);color:#fff}
+  .choice{display:flex;gap:6px;margin:8px 0 2px}
+  .choice button{font-family:var(--mono);font-size:12px;padding:7px 12px;border:1px solid var(--hairline);border-radius:999px;color:var(--iron);background:#fff}
+  .choice button.on{background:var(--ink);color:var(--chalk);border-color:var(--ink)}
+  .vA .foot{position:absolute;left:0;right:0;bottom:0;background:var(--ink);color:var(--chalk);
+    display:flex;align-items:center;gap:14px;padding:12px 16px;min-height:72px}
+  .vA .foot .mono{font-size:13px}
+  .vA .foot .fin{margin-left:auto;background:var(--blue);color:#fff;border-radius:6px;padding:12px 20px;font-weight:700}
+  .foot .timer{background:var(--red);color:#fff;border-radius:6px;padding:10px 14px;font-family:var(--mono);font-size:18px;font-weight:700;letter-spacing:.04em}
+  .foot .timer small{display:block;font-size:9px;letter-spacing:.12em;font-weight:400;opacity:.85}
+
+  /* ================= VARIANT B · Focus ================= */
+  .vB{background:var(--ink);color:var(--chalk-on-ink)}
+  .vB .b-top{padding:14px 18px 8px;display:flex;align-items:baseline;gap:10px}
+  .vB .b-top .lbl{color:#8B928F}
+  .vB .dots{display:flex;gap:5px;margin-left:auto}
+  .vB .dot{width:7px;height:7px;border-radius:50%;background:var(--ink-line)}
+  .vB .dot.done{background:var(--green)}
+  .vB .dot.cur{background:var(--chalk-on-ink)}
+  .vB .stage{flex:1;display:flex;flex-direction:column;padding:6px 18px 190px;overflow-y:auto}
+  .vB .x-name{font-size:clamp(30px,9vw,40px);line-height:.95;margin:8px 0 2px}
+  .vB .x-note{color:#8B928F;font-size:13.5px;max-width:34ch}
+  .vB .lastcard{background:var(--ink-card);border:1px solid var(--ink-line);border-radius:8px;padding:12px 14px;margin:14px 0 4px}
+  .vB .lastcard .mono{font-size:15px;color:#7FB3D8}
+  .vB .hintB{color:var(--chalk);background:var(--green);border-radius:4px;font-family:var(--mono);font-size:11px;padding:3px 8px;display:inline-block;margin-top:8px}
+  .vB .sets{display:flex;gap:8px;margin:16px 0 6px}
+  .vB .pill{flex:1;border:1.5px solid var(--ink-line);border-radius:8px;padding:10px 4px;text-align:center;font-family:var(--mono)}
+  .vB .pill.done{border-color:var(--green);color:var(--green)}
+  .vB .pill.cur{border-color:var(--chalk-on-ink)}
+  .vB .pill b{font-size:17px;display:block}
+  .vB .pill small{font-size:10px;color:#8B928F}
+  .vB .thumb{position:absolute;left:0;right:0;bottom:0;background:var(--ink-card);border-top:1px solid var(--ink-line);padding:14px 16px 16px}
+  .vB .thumb .stp{background:var(--ink);border-color:var(--ink-line)}
+  .vB .thumb .stp button{color:var(--chalk-on-ink)}
+  .vB .thumb .stp .v small{color:#8B928F}
+  .vB .thumb-row{display:flex;gap:10px;align-items:center;margin-bottom:12px}
+  .vB .log{width:100%;background:var(--blue);color:#fff;border-radius:8px;padding:16px;font-weight:800;font-size:17px;text-transform:uppercase;letter-spacing:.05em;font-family:var(--display)}
+  .vB .log.rest{background:var(--red)}
+  .vB .nav{display:flex;justify-content:space-between;margin-top:10px}
+  .vB .nav button{color:#8B928F;font-family:var(--mono);font-size:12.5px;padding:8px 10px}
+  .vB .setupB input{background:var(--ink);border:1px solid var(--ink-line);border-radius:6px;color:var(--chalk-on-ink);padding:8px 10px;width:100px;font-family:var(--mono);font-size:14px}
+  .vB .choice button{background:var(--ink);border-color:var(--ink-line);color:#8B928F}
+  .vB .choice button.on{background:var(--chalk-on-ink);color:var(--ink);border-color:var(--chalk-on-ink)}
+
+  /* ================= VARIANT C · Sheet ================= */
+  .vC .c-head{padding:14px 18px 10px;border-bottom:2px solid var(--ink);display:flex;align-items:baseline;gap:10px}
+  .vC .c-head .disp{font-size:18px}
+  .vC .c-head .mono{margin-left:auto;font-size:12px;color:var(--iron)}
+  .vC .list{flex:1;overflow-y:auto;padding-bottom:300px}
+  .vC .crow{width:100%;display:flex;align-items:center;gap:10px;padding:12px 16px;text-align:left;
+    border-bottom:1px solid var(--hairline);min-height:56px}
+  .vC .crow.sel{background:var(--card);box-shadow:inset 4px 0 0 var(--blue)}
+  .vC .crow.done{opacity:.5}
+  .vC .prog{font-family:var(--mono);font-size:12px;color:var(--iron);margin-left:auto;white-space:nowrap}
+  .vC .prog b{color:var(--ink)}
+  .vC .sheet{position:absolute;left:0;right:0;bottom:0;background:var(--card);border-top:2px solid var(--ink);
+    border-radius:14px 14px 0 0;padding:14px 16px 18px;box-shadow:0 -8px 24px rgba(25,28,27,.12)}
+  .vC .sheet-h{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+  .vC .sheet-h .nm{font-weight:700}
+  .vC .sheet-h .last{font-family:var(--mono);font-size:12px;color:var(--iron)}
+  .vC .ring{margin-left:auto;flex:0 0 54px;width:54px;height:54px;border-radius:50%;display:grid;place-items:center;
+    font-family:var(--mono);font-size:13px;font-weight:700;color:var(--red);background:
+    conic-gradient(var(--red) calc(var(--p,0)*1%),var(--chalk2) 0)}
+  .vC .ring i{background:var(--card);border-radius:50%;width:44px;height:44px;display:grid;place-items:center;font-style:normal}
+  .vC .setgrid{display:flex;flex-direction:column;gap:8px}
+  .vC .srow{display:flex;gap:8px;align-items:center}
+  .vC .srow .n{width:18px;font-family:var(--mono);font-size:12px;color:var(--iron)}
+  .vC .next{width:100%;margin-top:12px;background:var(--ink);color:var(--chalk);border-radius:8px;padding:14px;font-weight:700}
+  @media(prefers-reduced-motion:no-preference){
+    .vC .sheet{transition:transform .18s ease}
+  }
+  .empty{padding:40px 20px;text-align:center;color:var(--iron)}
+
+  /* ================= VARIANT D · Material 3 ================= */
+  .vD{background:#F6F9FA;color:#171C1F;font-family:Roboto,system-ui,sans-serif}
+  .vD .d-bar{padding:16px 16px 10px;display:flex;align-items:center;gap:12px;background:#F6F9FA}
+  .vD .d-bar h1{font-size:22px;font-weight:400;margin:0;letter-spacing:0}
+  .vD .d-bar .mono{margin-left:auto;font-size:12px;color:#40484D}
+  .vD .d-prog{height:4px;background:#DBE4E9;border-radius:2px;margin:0 16px 8px;overflow:hidden}
+  .vD .d-prog i{display:block;height:100%;background:#1B5480;border-radius:2px}
+  .vD .list{flex:1;overflow-y:auto;padding:4px 12px 120px;display:flex;flex-direction:column;gap:8px}
+  .vD .card{background:#FFFFFF;border-radius:16px;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+  .vD .card.done{background:#EFF2F4;box-shadow:none;opacity:.7}
+  .vD .card-h{width:100%;display:flex;align-items:center;gap:12px;padding:14px 16px;text-align:left;min-height:64px}
+  .vD .avatar{flex:0 0 40px;width:40px;height:40px;border-radius:50%;background:#D6E4F0;color:#1B5480;
+    display:grid;place-items:center;font-size:13px;font-weight:500;font-family:var(--mono)}
+  .vD .card.done .avatar{background:#1B5480;color:#fff}
+  .vD .card-h .nm{font-weight:500;font-size:15.5px}
+  .vD .card-h .sub{font-size:13px;color:#40484D;font-family:var(--mono)}
+  .vD .card-h .dose{margin-left:auto;font-size:12px;font-family:var(--mono);color:#40484D;background:#E8EEF2;border-radius:8px;padding:4px 8px;white-space:nowrap}
+  .vD .chipHint{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:500;color:#1F5C33;
+    background:#D3EBD8;border-radius:8px;padding:3px 8px;margin-left:6px}
+  .vD .x-body{padding:0 16px 16px}
+  .vD .setup input{border:1px solid #C0C8CD;border-radius:8px;padding:10px 12px;background:#fff;font-family:var(--mono);font-size:14px;width:110px}
+  .vD .setup{display:flex;align-items:center;gap:10px;margin:4px 0 12px}
+  .vD .setup .lbl{letter-spacing:.06em}
+  .vD .set{display:flex;align-items:center;gap:8px;padding:6px 0}
+  .vD .stp{border:1px solid #C0C8CD;border-radius:999px;background:#fff}
+  .vD .stp button{color:#1B5480;font-weight:500}
+  .vD .tick{border-radius:999px;border-color:#1B5480;color:#1B5480}
+  .vD .tick.on{background:#1B5480;border-color:#1B5480;color:#fff}
+  .vD .choice button{border-radius:8px;border:1px solid #C0C8CD;background:#fff;color:#40484D}
+  .vD .choice button.on{background:#D6E4F0;border-color:#D6E4F0;color:#0F3A5C}
+  .vD .d-foot{position:absolute;left:0;right:0;bottom:0;background:#EFF3F5;padding:12px 16px;
+    display:flex;align-items:center;gap:12px;min-height:80px;border-radius:20px 20px 0 0;box-shadow:0 -1px 3px rgba(0,0,0,.1)}
+  .vD .d-foot .mono{font-size:13px;color:#40484D}
+  .vD .fab{margin-left:auto;background:#1B5480;color:#fff;border-radius:16px;padding:15px 22px;font-weight:500;font-size:15px;box-shadow:0 2px 6px rgba(27,84,128,.4)}
+  .vD .timerD{margin-left:auto;background:#9E2F2F;color:#fff;border-radius:16px;padding:12px 18px;font-family:var(--mono);font-size:17px;font-weight:700}
+  .vD .timerD small{display:block;font-size:9px;letter-spacing:.1em;font-weight:400;opacity:.9;font-family:Roboto,system-ui,sans-serif}
+</style>
+
+<div id="app"></div>
+<div class="proto" role="toolbar" aria-label="Prototype variant switcher">
+  <button id="pPrev" aria-label="Previous variant">‹</button>
+  <span id="pLbl"></span>
+  <button id="pNext" aria-label="Next variant">›</button>
+</div>
+
+<script>
+/* ---------- shared session state (Workout B, mock last-time data) ---------- */
+const KG=2.5;
+const S={ elapsed:32*60, timer:{left:0,on:false},
+entries:[
+ {id:'warmup',name:'Treadmill or bike warm-up',measure:'tick',doseLbl:'5 min',note:'Easy pace. This is your warm-up.',done:false},
+ {id:'leg-curl',name:'Leg curl',measure:'w',sets:3,target:12,note:'Hamstrings, back of the thigh.',
+  last:{setup:'seat 3',w:25,reps:[12,12,12]},hint:true,setup:'seat 3',log:[{w:27.5,v:12,d:false},{w:27.5,v:12,d:false},{w:27.5,v:12,d:false}]},
+ {id:'leg-ext',name:'Leg extension',measure:'w',sets:3,target:12,note:'Quads, front of the thigh.',
+  last:{setup:'seat 3',w:30,reps:[12,11,10]},setup:'seat 3',log:[{w:30,v:12,d:false},{w:30,v:12,d:false},{w:30,v:12,d:false}]},
+ {id:'row',name:'Seated cable row',measure:'w',sets:3,target:12,note:'Chest up, pull to belly.',
+  last:{setup:'',w:32,reps:[12,12,10]},setup:'',log:[{w:32,v:12,d:false},{w:32,v:12,d:false},{w:32,v:12,d:false}]},
+ {id:'chest',name:'Pec deck',measure:'w',sets:3,target:12,choice:['Pec deck','Incline chest press'],chosen:0,
+  last:{setup:'seat 4',w:25,reps:[12,10,9]},setup:'seat 4',log:[{w:25,v:12,d:false},{w:25,v:12,d:false},{w:25,v:12,d:false}]},
+ {id:'lat-raise',name:'Lateral raise',measure:'w',sets:2,target:15,note:'Very light. 5 kg is real work here.',
+  last:{setup:'',w:5,reps:[15,12]},setup:'',log:[{w:5,v:15,d:false},{w:5,v:15,d:false}]},
+ {id:'curl',name:'Machine curl',measure:'w',sets:2,target:12,choice:['Machine curl','Dumbbell curl'],chosen:0,
+  last:{setup:'seat 2',w:20,reps:[12,11]},setup:'seat 2',log:[{w:20,v:12,d:false},{w:20,v:12,d:false}]},
+ {id:'plank',name:'Plank',measure:'s',sets:3,target:30,note:'Straight line, hips to shoulders.',
+  last:{setup:'',reps:[30,30,25]},setup:'',log:[{v:30,d:false},{v:30,d:false},{v:30,d:false}]},
+ {id:'walk',name:'Incline walk',measure:'tick',doseLbl:'15 min',note:'Brisk but you can still talk.',done:false},
+]};
+let focusIdx=1; // variant B pointer
+
+const fmtT=s=>`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+const exDone=e=>e.measure==='tick'?e.done:e.log.every(x=>x.d);
+const doneCount=()=>S.entries.filter(exDone).length;
+const doseOf=e=>e.measure==='tick'?e.doseLbl:`${e.sets} × ${e.target}${e.measure==='s'?'s':''}`;
+const lastLine=e=>{
+  if(e.measure==='tick'||!e.last)return 'never';
+  const r=e.last.reps.join(' / ');
+  return (e.measure==='w'?`${e.last.w}kg · `:'')+r+(e.measure==='s'?'s':'');
+};
+function completeSet(e,i){ e.log[i].d=!e.log[i].d;
+  if(e.log[i].d){S.timer.left=90;S.timer.on=true;} render(); }
+function tickEx(e){ e.done=!e.done; render(); }
+function step(e,i,f,d){ const s=e.log[i];
+  if(f==='w')s.w=Math.max(0,+(s.w+d*KG).toFixed(1));
+  else s.v=Math.max(0,s.v+d*(e.measure==='s'?5:1)); render(); }
+function choose(e,c){ e.chosen=c; e.name=e.choice[c]; render(); }
+function skipTimer(){ S.timer.on=false;S.timer.left=0; render(); }
+setInterval(()=>{ S.elapsed++;
+  if(S.timer.on){ S.timer.left--; if(S.timer.left<=0){S.timer.on=false;}
+    ['aT','bT','cT'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=fmtT(Math.max(0,S.timer.left))});
+    const ring=document.getElementById('cRing'); if(ring)ring.style.setProperty('--p',100*(1-S.timer.left/90));
+    if(!S.timer.on)render();
+  }
+  const el=document.getElementById('elapsed'); if(el)el.textContent=fmtT(S.elapsed);
+},1000);
+
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+function stepper(e,i,f){ const s=e.log[i];
+  const val=f==='w'?`${s.w}<small>kg</small>`:`${s.v}<small>${e.measure==='s'?'sec':'reps'}</small>`;
+  return `<div class="stp"><button data-a="st" data-e="${e.id}" data-i="${i}" data-f="${f}" data-d="-1" aria-label="decrease">−</button>
+  <span class="v mono">${val}</span>
+  <button data-a="st" data-e="${e.id}" data-i="${i}" data-f="${f}" data-d="1" aria-label="increase">＋</button></div>`;}
+const choiceRow=e=>!e.choice?'':`<div class="choice">${e.choice.map((c,ci)=>
+  `<button data-a="ch" data-e="${e.id}" data-c="${ci}" class="${ci===e.chosen?'on':''}">${c}${ci===e.chosen?'':' ↔'}</button>`).join('')}</div>`;
+const timerOrNull=id=>S.timer.on?`<button class="timer" data-a="skip" aria-label="rest timer, tap to skip"><span id="${id}">${fmtT(S.timer.left)}</span><small>REST · TAP TO SKIP</small></button>`:'';
+
+/* ---------------- Variant A · Ledger ---------------- */
+let aOpen='leg-curl';
+function renderA(){
+  const rows=S.entries.map(e=>{
+    const done=exDone(e), open=aOpen===e.id&&!done;
+    let body='';
+    if(open&&e.measure!=='tick'){
+      body=`<div class="x-body">${choiceRow(e)}
+      <div class="setup"><span class="lbl">Setup</span><input value="${esc(e.setup)}" placeholder="seat…" aria-label="setup"></div>
+      ${e.log.map((s,i)=>`<div class="set"><span class="n mono">${i+1}</span>
+        ${e.measure==='w'?stepper(e,i,'w'):''}${stepper(e,i,'v')}
+        <button class="tick ${s.d?'on':''}" data-a="set" data-e="${e.id}" data-i="${i}" aria-label="complete set ${i+1}">✓</button></div>`).join('')}
+      </div>`;
+    }
+    return `<div class="row ${done?'done':''}">
+      <button class="row-h" data-a="${e.measure==='tick'?'tick':'open'}" data-e="${e.id}">
+        <span class="st"></span>
+        <span><span class="nm">${e.name}</span>${e.hint&&!done?`<span class="hint">↑ add weight</span>`:''}
+        <span class="last">${lastLine(e)}</span></span>
+        <span class="dose">${doseOf(e)}</span></button>${body}</div>`;
+  }).join('');
+  return `<div class="phone vA">
+    <div class="a-head"><div class="lbl">Session · 18 Aug</div><div class="disp">Workout B · pull &amp; legs</div></div>
+    <div class="list">${rows}</div>
+    <div class="foot">${S.timer.on?timerOrNull('aT'):
+      `<span class="mono"><span id="elapsed">${fmtT(S.elapsed)}</span></span><span class="mono">${doneCount()}/${S.entries.length} done</span>`}
+      <button class="fin disp">Finish</button></div></div>`;
+}
+
+/* ---------------- Variant B · Focus ---------------- */
+function renderB(){
+  const e=S.entries[focusIdx];
+  const dots=S.entries.map((x,i)=>`<span class="dot ${exDone(x)?'done':''} ${i===focusIdx?'cur':''}"></span>`).join('');
+  let stage,thumb;
+  if(e.measure==='tick'){
+    stage=`<div class="lbl">${doseOf(e)}</div><h1 class="x-name disp">${e.name}</h1><p class="x-note">${e.note||''}</p>`;
+    thumb=`<button class="log" data-a="tick" data-e="${e.id}">${e.done?'✓ Done':'Mark done'}</button>`;
+  }else{
+    const cur=e.log.findIndex(s=>!s.d);
+    const pills=e.log.map((s,i)=>`<div class="pill ${s.d?'done':''} ${i===cur?'cur':''}"><small>SET ${i+1}</small><b>${s.d?(e.measure==='w'?s.w+'kg·':'')+s.v:'—'}</b></div>`).join('');
+    stage=`<div class="lbl">${doseOf(e)} ${e.setup?'· '+esc(e.setup):''}</div>
+      <h1 class="x-name disp">${e.name}</h1>${choiceRow(e)}
+      <div class="lastcard"><span class="lbl">Last time</span><div class="mono">${lastLine(e)}</div>
+      ${e.hint?'<span class="hintB">↑ ADD WEIGHT</span>':''}</div>
+      <div class="sets">${pills}</div>`;
+    const i=cur<0?e.log.length-1:cur;
+    thumb=`<div class="thumb-row">${e.measure==='w'?stepper(e,i,'w'):''}${stepper(e,i,'v')}</div>
+      ${S.timer.on?`<button class="log rest" data-a="skip"><span id="bT">${fmtT(S.timer.left)}</span> REST — TAP TO SKIP</button>`
+      :`<button class="log" data-a="set" data-e="${e.id}" data-i="${i}">${cur<0?'All sets done':'Log set '+(i+1)}</button>`}`;
+  }
+  return `<div class="phone vB">
+    <div class="b-top"><span class="lbl">Workout B</span><span class="mono" style="font-size:12px"><span id="elapsed">${fmtT(S.elapsed)}</span></span><span class="dots">${dots}</span></div>
+    <div class="stage">${stage}</div>
+    <div class="thumb">${thumb}
+      <div class="nav"><button data-a="nav" data-d="-1">‹ prev</button><button data-a="nav" data-d="1">next ›</button></div></div></div>`;
+}
+
+/* ---------------- Variant C · Sheet ---------------- */
+let cSel='leg-curl';
+function renderC(){
+  const rows=S.entries.map(e=>{
+    const dn=e.measure==='tick'?(e.done?'✓':e.doseLbl):`<b>${e.log.filter(s=>s.d).length}</b>/${e.sets}`;
+    return `<button class="crow ${cSel===e.id?'sel':''} ${exDone(e)?'done':''}" data-a="sel" data-e="${e.id}">
+      <span><span class="nm">${e.name}</span> ${e.hint&&!exDone(e)?'<span class="hint" style="color:var(--green);font-family:var(--mono);font-size:11px;font-weight:700">↑</span>':''}
+      <span class="last" style="display:block;font-family:var(--mono);font-size:12px;color:var(--iron)">${lastLine(e)}</span></span>
+      <span class="prog mono">${dn}</span></button>`;}).join('');
+  const e=S.entries.find(x=>x.id===cSel); let sheet='';
+  if(e){
+    const inner = e.measure==='tick'
+      ? `<button class="next" data-a="tick" data-e="${e.id}">${e.done?'✓ Done':'Mark '+e.name+' done'}</button>`
+      : `${choiceRow(e)}<div class="setgrid">${e.log.map((s,i)=>`<div class="srow"><span class="n mono">${i+1}</span>
+          ${e.measure==='w'?stepper(e,i,'w'):''}${stepper(e,i,'v')}
+          <button class="tick ${s.d?'on':''}" data-a="set" data-e="${e.id}" data-i="${i}" aria-label="complete set ${i+1}">✓</button></div>`).join('')}</div>`;
+    sheet=`<div class="sheet">
+      <div class="sheet-h"><span><span class="nm">${e.name}</span> <span class="mono" style="font-size:12px;color:var(--iron)">${doseOf(e)}</span>
+        <span class="last" style="display:block">last: ${lastLine(e)} ${e.last&&e.last.setup?'· '+esc(e.last.setup):''}</span></span>
+        ${S.timer.on?`<button class="ring" id="cRing" style="--p:${100*(1-S.timer.left/90)}" data-a="skip" aria-label="rest timer, tap to skip"><i id="cT">${fmtT(S.timer.left)}</i></button>`:''}</div>
+      ${inner}</div>`;
+  }
+  return `<div class="phone vC">
+    <div class="c-head"><span class="disp">Workout B</span><span class="mono"><span id="elapsed">${fmtT(S.elapsed)}</span> · ${doneCount()}/${S.entries.length}</span></div>
+    <div class="list">${rows}</div>${sheet}</div>`;
+}
+
+/* ---------------- Variant D · Material 3 ---------------- */
+let dOpen='leg-curl';
+function renderD(){
+  const cards=S.entries.map(e=>{
+    const done=exDone(e), open=dOpen===e.id&&!done;
+    const av=e.measure==='tick'?(done?'✓':'—'):`${e.log.filter(s=>s.d).length}/${e.sets}`;
+    let body='';
+    if(open&&e.measure!=='tick'){
+      body=`<div class="x-body">${choiceRow(e)}
+      <div class="setup"><span class="lbl">Setup</span><input value="${esc(e.setup)}" placeholder="seat…" aria-label="setup"></div>
+      ${e.log.map((s,i)=>`<div class="set"><span class="n mono" style="width:20px;font-size:12px;color:#40484D">${i+1}</span>
+        ${e.measure==='w'?stepper(e,i,'w'):''}${stepper(e,i,'v')}
+        <button class="tick ${s.d?'on':''}" data-a="set" data-e="${e.id}" data-i="${i}" aria-label="complete set ${i+1}">✓</button></div>`).join('')}
+      </div>`;
+    }
+    return `<div class="card ${done?'done':''}">
+      <button class="card-h" data-a="${e.measure==='tick'?'tick':'openD'}" data-e="${e.id}">
+        <span class="avatar">${av}</span>
+        <span><span class="nm">${e.name}</span>${e.hint&&!done?`<span class="chipHint">↑ add weight</span>`:''}
+        <span class="sub" style="display:block">${lastLine(e)}</span></span>
+        <span class="dose">${doseOf(e)}</span></button>${body}</div>`;
+  }).join('');
+  return `<div class="phone vD">
+    <div class="d-bar"><h1>Workout B</h1><span class="mono"><span id="elapsed">${fmtT(S.elapsed)}</span></span></div>
+    <div class="d-prog"><i style="width:${100*doneCount()/S.entries.length}%"></i></div>
+    <div class="list">${cards}</div>
+    <div class="d-foot"><span class="mono">${doneCount()}/${S.entries.length} exercises</span>
+      ${S.timer.on?`<button class="timerD" data-a="skip"><span id="aT">${fmtT(S.timer.left)}</span><small>REST · TAP TO SKIP</small></button>`
+      :`<button class="fab">Finish</button>`}</div></div>`;
+}
+
+/* ---------------- switcher + events ---------------- */
+const VARIANTS=[['A','Ledger',renderA],['B','Focus',renderB],['C','Sheet',renderC],['D','Material',renderD]];
+let vi=Math.max(0,VARIANTS.findIndex(v=>v[0]===(new URLSearchParams(location.search).get('variant')||'A')));
+function render(){
+  document.getElementById('app').innerHTML=VARIANTS[vi][2]();
+  document.getElementById('pLbl').textContent=`${VARIANTS[vi][0]} — ${VARIANTS[vi][1]}`;
+}
+function cycle(d){ vi=(vi+d+VARIANTS.length)%VARIANTS.length;
+  const u=new URL(location); u.searchParams.set('variant',VARIANTS[vi][0]);
+  history.replaceState(null,'',u); render(); }
+document.getElementById('pPrev').onclick=()=>cycle(-1);
+document.getElementById('pNext').onclick=()=>cycle(1);
+document.addEventListener('keydown',ev=>{
+  if(/INPUT|TEXTAREA/.test(document.activeElement.tagName))return;
+  if(ev.key==='ArrowLeft')cycle(-1); if(ev.key==='ArrowRight')cycle(1);});
+document.getElementById('app').addEventListener('click',ev=>{
+  const b=ev.target.closest('[data-a]'); if(!b)return;
+  const e=S.entries.find(x=>x.id===b.dataset.e); const a=b.dataset.a;
+  if(a==='open'){aOpen=aOpen===b.dataset.e?null:b.dataset.e;render();}
+  else if(a==='openD'){dOpen=dOpen===b.dataset.e?null:b.dataset.e;render();}
+  else if(a==='tick')tickEx(e);
+  else if(a==='set')completeSet(e,+b.dataset.i);
+  else if(a==='st')step(e,+b.dataset.i,b.dataset.f,+b.dataset.d);
+  else if(a==='ch')choose(e,+b.dataset.c);
+  else if(a==='sel'){cSel=b.dataset.e;render();}
+  else if(a==='skip')skipTimer();
+  else if(a==='nav'){focusIdx=Math.min(S.entries.length-1,Math.max(0,focusIdx+ +b.dataset.d));render();}
+});
+render();
+</script>

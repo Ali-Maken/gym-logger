@@ -23,3 +23,9 @@ Resolved 2026-08-16 with the user — **one deep Logbook module, signals-first, 
 - **Reactivity**: Angular signals at the seam; mutations are async methods that **commit to Dexie first, then update the signal** (write-through — the never-lose-data path). No RxJS, no liveQuery (single writer reacting to its own writes is pointless). The 90s rest timer is session-screen UI state, not Logbook state.
 - **Testing**: pure domain functions unit-tested thoroughly; Logbook integration-tested through its public interface against `fake-indexeddb` (write-through per set, restore atomicity); components untested by design — they're dumb, and the prototype covers look/feel.
 - Rationale in deep-module terms: three callers, one body of complexity → one seam with real leverage; the layered repo/service/store alternative was rejected as hypothetical seams (one adapter each); component-local liveQuery rejected for failing locality.
+
+### Amendment (2026-08-16, from [Session screen prototype](08-session-screen-prototype.md))
+
+- **`SessionView` presentation seam**: the session feature splits into a thin container (owns route, Logbook wiring, layout selection, rest-timer state) and four dumb layout adapters — `LedgerView`, `FocusView`, `SheetView`, `MaterialView` — all consuming the same input contract (session signals + callbacks: `completeSet`, `step`, `choose`, `setSetup`, `skipTimer`). A future layout = one new adapter file + a registry entry; nothing else changes. This is a real seam (four adapters on day one). Default layout: Sheet; last choice persisted.
+- **Theme tokens**: every color/type/radius/elevation decision is a CSS custom property; a theme is a token file applied via `data-theme` on the root. New themes are token-only. Layout and theme are independent axes.
+- Layouts must contain zero domain logic — the ×4 maintenance cost the user accepted stays confined to presentation.

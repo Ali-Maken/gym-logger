@@ -1,0 +1,225 @@
+/* .phone qualifier: outrank .phone's own background in the cascade */
+.phone.material-view {
+  background: var(--color-bg);
+}
+
+.mv-bar {
+  padding: 16px 16px 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mv-bar h1 {
+  font-size: 22px;
+  font-weight: 400;
+  margin: 0;
+}
+
+.mv-clock {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--color-ink-dim);
+}
+
+.mv-prog {
+  height: 4px;
+  background: var(--color-hairline);
+  border-radius: 2px;
+  margin: 0 16px 8px;
+  overflow: hidden;
+}
+
+.mv-prog i {
+  display: block;
+  height: 100%;
+  background: var(--color-accent);
+  border-radius: 2px;
+}
+
+.mv-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 12px 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mv-card {
+  background: var(--color-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.mv-card.done {
+  background: var(--color-surface);
+  box-shadow: none;
+  opacity: 0.7;
+}
+
+.mv-card-h {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  text-align: left;
+  min-height: 64px;
+}
+
+.mv-avatar {
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--color-accent-soft);
+  color: var(--color-on-accent-soft);
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.mv-card.done .mv-avatar {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+.mv-card-main {
+  min-width: 0;
+}
+
+.mv-nm {
+  font-weight: 500;
+  font-size: 15.5px;
+}
+
+.mv-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--color-on-positive-soft);
+  background: var(--color-positive-soft);
+  border-radius: var(--radius-md);
+  padding: 3px 8px;
+  margin-left: 6px;
+}
+
+.mv-sub {
+  display: block;
+  font-size: 13px;
+  color: var(--color-ink-dim);
+}
+
+.mv-dose {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--color-ink-dim);
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  padding: 4px 8px;
+  white-space: nowrap;
+}
+
+.mv-body {
+  padding: 0 16px 16px;
+}
+
+.mv-tip {
+  margin: 0 0 10px;
+  font-size: 12.5px;
+  color: var(--color-ink-dim);
+}
+
+.mv-foot {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--color-surface);
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 80px;
+  border-radius: 20px 20px 0 0;
+  box-shadow: var(--shadow-sheet);
+}
+
+.mv-foot > .mono {
+  font-size: 13px;
+  color: var(--color-ink-dim);
+}
+
+.mv-fab {
+  margin-left: auto;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  border-radius: var(--radius-lg);
+  padding: 15px 22px;
+  font-weight: 500;
+  font-size: 15px;
+  box-shadow: var(--shadow-card);
+}
+
+.mv-fab.armed {
+  background: var(--color-alert);
+  color: var(--color-on-alert);
+}
+
+.mv-timer {
+  margin-left: auto;
+  background: var(--color-alert);
+  color: var(--color-on-alert);
+  border-radius: var(--radius-lg);
+  padding: 12px 18px;
+  text-align: left;
+}
+
+.mv-timer .mono {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.mv-timer small {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  font-weight: 400;
+  opacity: 0.9;
+}
+
+/* rounded restyling of the shared pieces */
+.material-view .stp {
+  border-radius: 999px;
+}
+
+.material-view .stp button {
+  color: var(--color-accent);
+  font-weight: 500;
+}
+
+.material-view .ss-tick {
+  border-radius: 999px;
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.material-view .ss-tick.on {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+.material-view .ss-choice button {
+  border-radius: var(--radius-md);
+}
+
+.material-view .ss-choice button.on {
+  background: var(--color-accent-soft);
+  border-color: var(--color-accent-soft);
+  color: var(--color-on-accent-soft);
+}

@@ -12,7 +12,8 @@ export function suggestTemplate(sessions: Session[]): TemplateId {
   const ab = finished.filter((s) => s.templateId === 'a' || s.templateId === 'b')
   if (ab.length === 0) return 'a'
 
-  const last = ab.reduce((latest, s) => (s.finishedAt! > latest.finishedAt! ? s : latest))
+  // >= so a same-millisecond tie resolves to the later session in the list
+  const last = ab.reduce((latest, s) => (s.finishedAt! >= latest.finishedAt! ? s : latest))
   return last.templateId === 'a' ? 'b' : 'a'
 }
 

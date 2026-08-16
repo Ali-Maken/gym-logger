@@ -1,0 +1,244 @@
+/* .phone qualifier: outrank .phone's own background in the cascade */
+.phone.focus-view {
+  background: var(--color-inverse);
+  color: var(--color-on-inverse);
+}
+
+.fv-top {
+  padding: 14px 18px 8px;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.fv-top .lbl {
+  color: var(--color-inverse-dim);
+}
+
+.fv-clock {
+  font-size: 12px;
+}
+
+.fv-dots {
+  display: flex;
+  gap: 5px;
+  margin-left: auto;
+  align-self: center;
+}
+
+.fv-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-inverse-hairline);
+}
+
+.fv-dot.done {
+  background: var(--color-positive);
+}
+
+.fv-dot.cur {
+  background: var(--color-on-inverse);
+}
+
+.fv-stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 6px 18px 230px;
+  overflow-y: auto;
+}
+
+.fv-name {
+  font-size: clamp(30px, 9vw, 40px);
+  line-height: 0.95;
+  margin: 8px 0 2px;
+}
+
+.fv-tip {
+  color: var(--color-inverse-dim);
+  font-size: 13.5px;
+  max-width: 34ch;
+  margin: 6px 0 0;
+}
+
+.fv-lastcard {
+  background: var(--color-inverse-card);
+  border: 1px solid var(--color-inverse-hairline);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  margin: 14px 0 4px;
+  align-self: stretch;
+}
+
+.fv-lastcard .lbl {
+  color: var(--color-inverse-dim);
+}
+
+.fv-lastval {
+  font-size: 15px;
+  color: var(--color-accent-on-inverse);
+}
+
+.fv-hint {
+  color: var(--color-on-positive);
+  background: var(--color-positive);
+  border-radius: 4px;
+  font-size: 11px;
+  padding: 3px 8px;
+  display: inline-block;
+  margin-top: 8px;
+}
+
+.fv-sets {
+  display: flex;
+  gap: 8px;
+  margin: 16px 0 6px;
+  align-self: stretch;
+}
+
+.fv-pill {
+  flex: 1;
+  border: 1.5px solid var(--color-inverse-hairline);
+  border-radius: var(--radius-md);
+  padding: 10px 4px;
+  text-align: center;
+}
+
+.fv-pill.done {
+  border-color: var(--color-positive);
+  color: var(--color-positive);
+}
+
+.fv-pill.cur {
+  border-color: var(--color-on-inverse);
+}
+
+.fv-pill b {
+  font-size: 17px;
+  display: block;
+}
+
+.fv-pill small {
+  font-size: 10px;
+  color: var(--color-inverse-dim);
+}
+
+.fv-thumb {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--color-inverse-card);
+  border-top: 1px solid var(--color-inverse-hairline);
+  padding: 14px 16px calc(16px + env(safe-area-inset-bottom));
+}
+
+.fv-thumbrow {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.fv-log {
+  width: 100%;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  font-weight: 800;
+  font-size: 17px;
+  letter-spacing: 0.05em;
+}
+
+.fv-log.rest {
+  background: var(--color-alert);
+  color: var(--color-on-alert);
+  font-family: var(--font-mono);
+  font-weight: 700;
+}
+
+.fv-log:disabled {
+  opacity: 0.6;
+}
+
+.fv-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.fv-nav button {
+  color: var(--color-inverse-dim);
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  padding: 8px 10px;
+}
+
+.fv-nav button:disabled {
+  opacity: 0.4;
+}
+
+.fv-fin {
+  border: 1px solid var(--color-inverse-hairline);
+  border-radius: var(--radius-sm);
+}
+
+.fv-fin.armed {
+  background: var(--color-alert);
+  color: var(--color-on-alert);
+  border-color: var(--color-alert);
+}
+
+/* dark restyling of the shared pieces */
+.focus-view .stp {
+  background: var(--color-inverse);
+  border-color: var(--color-inverse-hairline);
+}
+
+.focus-view .stp button {
+  color: var(--color-on-inverse);
+}
+
+.focus-view .stp-v small {
+  color: var(--color-inverse-dim);
+}
+
+.focus-view .ss-choice {
+  margin: 10px 0 0;
+}
+
+.focus-view .ss-choice button {
+  background: var(--color-inverse);
+  border-color: var(--color-inverse-hairline);
+  color: var(--color-inverse-dim);
+}
+
+.focus-view .ss-choice button.on {
+  background: var(--color-on-inverse);
+  color: var(--color-inverse);
+  border-color: var(--color-on-inverse);
+}
+
+.focus-view .ss-setup {
+  margin: 14px 0 0;
+}
+
+.focus-view .ss-setup input {
+  background: var(--color-inverse);
+  border-color: var(--color-inverse-hairline);
+  color: var(--color-on-inverse);
+}
+
+.focus-view .ss-note {
+  background: var(--color-inverse);
+  border-color: var(--color-inverse-hairline);
+  color: var(--color-on-inverse);
+}
+
+.focus-view .ss-notebtn {
+  color: var(--color-inverse-dim);
+}

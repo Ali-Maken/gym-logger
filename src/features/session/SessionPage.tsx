@@ -19,7 +19,8 @@ import {
   type TemplateEntry,
 } from '../../core/logbook'
 import type { PendingSet, SessionRowVm, SessionVm } from './views/contract'
-import { resolveView } from './views/registry'
+import { SESSION_VIEWS, resolveViewId } from './views/registry'
+import { LayoutSwitcher } from './LayoutSwitcher'
 
 // Thin container: Logbook wiring, pending-set drafts, rest timer, selection,
 // layout choice. Everything a layout shows comes through the SessionViewProps
@@ -133,21 +134,25 @@ export function SessionPage() {
     navigate('/')
   }
 
-  const View = resolveView(layoutPref)
+  const viewId = resolveViewId(layoutPref)
+  const View = SESSION_VIEWS[viewId].View
   return (
-    <View
-      vm={vm}
-      selectedKey={selectedKey}
-      onSelect={setSelectedOverride}
-      onStep={handleStep}
-      onCompleteSet={(row, i) => void handleCompleteSet(row, i)}
-      onTick={(row) => void handleTick(row)}
-      onChoose={(row, id) => void handleChoose(row, id)}
-      onSetup={(row, setup) => void setSetup(row.exercise.id, setup)}
-      onNote={(row, note) => void setExerciseNote(row.exercise.id, note)}
-      onSkipTimer={() => setTimerEndsAt(null)}
-      onFinish={() => void handleFinish()}
-    />
+    <>
+      <View
+        vm={vm}
+        selectedKey={selectedKey}
+        onSelect={setSelectedOverride}
+        onStep={handleStep}
+        onCompleteSet={(row, i) => void handleCompleteSet(row, i)}
+        onTick={(row) => void handleTick(row)}
+        onChoose={(row, id) => void handleChoose(row, id)}
+        onSetup={(row, setup) => void setSetup(row.exercise.id, setup)}
+        onNote={(row, note) => void setExerciseNote(row.exercise.id, note)}
+        onSkipTimer={() => setTimerEndsAt(null)}
+        onFinish={() => void handleFinish()}
+      />
+      <LayoutSwitcher current={viewId} />
+    </>
   )
 }
 

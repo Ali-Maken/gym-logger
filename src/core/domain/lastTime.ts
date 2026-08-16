@@ -11,7 +11,8 @@ export function selectLastTime(sessions: Session[], exerciseId: string): LoggedE
     if (session.finishedAt === undefined) continue
     const logged = session.exercises.find((e) => e.exerciseId === exerciseId)
     if (!logged || logged.sets.length === 0) continue
-    if (!best || session.finishedAt > best.finishedAt) best = { finishedAt: session.finishedAt, logged }
+    // >= so a same-millisecond tie resolves to the later session in the list
+    if (!best || session.finishedAt >= best.finishedAt) best = { finishedAt: session.finishedAt, logged }
   }
   return best?.logged
 }

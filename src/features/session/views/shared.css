@@ -1,0 +1,124 @@
+/* Shared layout building blocks (ss-*). Token-only styling; layouts
+   restyle them under their own wrapper class. */
+
+.ss-choice {
+  display: flex;
+  gap: 6px;
+  margin: 0 0 10px;
+}
+
+.ss-choice button {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 7px 12px;
+  border: 1px solid var(--color-hairline);
+  border-radius: 999px;
+  color: var(--color-ink-dim);
+  background: var(--color-field);
+}
+
+.ss-choice button.on {
+  background: var(--color-inverse);
+  color: var(--color-on-inverse);
+  border-color: var(--color-inverse);
+}
+
+.ss-setup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 10px;
+}
+
+.ss-setup input {
+  width: 110px;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-sm);
+  padding: 7px 9px;
+  background: var(--color-field);
+  font-family: var(--font-mono);
+  font-size: 14px;
+}
+
+.ss-setgrid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ss-srow {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.ss-n {
+  width: 18px;
+  font-size: 12px;
+  color: var(--color-ink-dim);
+}
+
+.ss-logged {
+  font-size: 15px;
+  font-weight: 700;
+  padding: 10px 0;
+}
+
+.ss-tick {
+  flex: 0 0 52px;
+  height: 46px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--color-positive);
+  color: var(--color-positive);
+  font-size: 20px;
+  display: grid;
+  place-items: center;
+  margin-left: auto;
+}
+
+.ss-tick.on {
+  background: var(--color-positive);
+  color: var(--color-on-positive);
+}
+
+.ss-note {
+  width: 100%;
+  margin-top: 10px;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  background: var(--color-field);
+  font-size: 14px;
+}
+
+.ss-notebtn {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--color-ink-dim);
+  padding: 6px 2px;
+}
+
+.ss-ring {
+  margin-left: auto;
+  flex: 0 0 54px;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-alert);
+  background: conic-gradient(var(--color-alert) calc(var(--p, 0) * 1%), var(--color-bg) 0);
+}
+
+.ss-ring i {
+  background: var(--color-card);
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  font-style: normal;
+}

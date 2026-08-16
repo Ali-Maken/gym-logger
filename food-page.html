@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Food: the daytime fix</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Public+Sans:wght@400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --chalk:#E6E7E2;
+    --card:#F2F2EE;
+    --ink:#191C1B;
+    --iron:#585E60;
+    --hairline:#C6C8C1;
+    --green:#2F6B4A;
+    --red:#9E2F2F;
+    --display:"Archivo",system-ui,sans-serif;
+    --body:"Public Sans",system-ui,sans-serif;
+    --mono:"JetBrains Mono",ui-monospace,monospace;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--chalk);color:var(--ink);
+    font-family:var(--body);font-size:17px;line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;padding:0 20px 80px}
+
+  .mast{padding:44px 0 26px;border-bottom:2px solid var(--ink)}
+  .eyebrow{
+    font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--iron);margin:0 0 14px
+  }
+  .mast h1{
+    font-family:var(--display);font-weight:800;text-transform:uppercase;
+    font-size:clamp(36px,10vw,64px);line-height:.93;letter-spacing:-.03em;margin:0 0 16px
+  }
+  .mast h1 em{font-style:normal;color:var(--green)}
+  .mast .sub{margin:0;color:var(--iron);font-size:16px;max-width:52ch}
+
+  section{padding:40px 0 4px}
+  section + section{border-top:1px solid var(--hairline)}
+  .num{
+    font-family:var(--mono);font-size:11px;color:var(--iron);
+    letter-spacing:.14em;text-transform:uppercase;display:block;margin-bottom:10px
+  }
+  h2{
+    font-family:var(--display);font-weight:800;text-transform:uppercase;
+    font-size:clamp(24px,6vw,34px);line-height:1.02;letter-spacing:-.02em;margin:0 0 18px
+  }
+  h3{font-family:var(--display);font-weight:700;font-size:18px;margin:28px 0 8px}
+  p{margin:0 0 16px}
+  strong{font-weight:600}
+
+  /* diagnosis bars */
+  .bars{margin:0 0 22px}
+  .bar{margin-bottom:16px}
+  .bar-label{
+    font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--iron);margin-bottom:6px
+  }
+  .bar-track{display:flex;height:38px;border:1px solid var(--hairline);border-radius:3px;overflow:hidden}
+  .seg{
+    flex:1;display:flex;align-items:center;justify-content:center;
+    font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;
+    color:var(--iron);border-right:1px solid var(--hairline);background:var(--card);
+    text-align:center;padding:0 4px;line-height:1.2
+  }
+  .seg:last-child{border-right:0}
+  .seg.full{background:var(--red);color:#fff;flex:2.2}
+  .seg.fed{background:var(--green);color:#fff}
+  .seg.ok{background:#D9E3DC;color:var(--green)}
+
+  /* day blocks */
+  .block{
+    background:var(--card);border:1px solid var(--hairline);
+    border-left:5px solid var(--green);border-radius:4px;
+    padding:16px 18px;margin-bottom:12px
+  }
+  .block .when{
+    font-family:var(--mono);font-size:11px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--green);margin-bottom:6px
+  }
+  .block b{
+    display:block;font-family:var(--display);font-size:17px;
+    margin-bottom:6px;letter-spacing:-.01em
+  }
+  .block p{margin:0;font-size:15.5px;color:var(--iron);line-height:1.55}
+  .block p + p{margin-top:8px}
+  .block.keep{border-left-color:var(--ink)}
+  .block.keep .when{color:var(--ink)}
+
+  ul.plain{margin:0 0 18px;padding-left:20px}
+  ul.plain li{margin-bottom:8px}
+
+  .proteins{display:grid;gap:8px;margin-bottom:8px}
+  @media(min-width:540px){.proteins{grid-template-columns:1fr 1fr}}
+  .p-item{
+    background:var(--card);border:1px solid var(--hairline);border-radius:3px;
+    padding:10px 14px;font-size:15.5px
+  }
+  .p-item span{
+    font-family:var(--mono);font-size:11px;color:var(--green);
+    display:block;letter-spacing:.06em;text-transform:uppercase;margin-bottom:1px
+  }
+
+  .never{
+    border:1px solid var(--ink);border-radius:4px;padding:18px 20px;margin:0 0 8px
+  }
+  .never b{
+    font-family:var(--display);text-transform:uppercase;font-size:14px;
+    letter-spacing:.04em;display:block;margin-bottom:10px
+  }
+  .never ul{margin:0;padding-left:20px}
+  .never li{margin-bottom:8px}
+  .never li:last-child{margin-bottom:0}
+
+  .pull{
+    font-family:var(--display);font-weight:700;font-size:clamp(19px,4.6vw,25px);
+    line-height:1.25;letter-spacing:-.01em;
+    border-left:5px solid var(--green);padding:4px 0 4px 18px;margin:0 0 22px
+  }
+
+  footer{
+    margin-top:52px;padding-top:20px;border-top:2px solid var(--ink);
+    font-family:var(--mono);font-size:12px;color:var(--iron);line-height:1.8
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="mast">
+    <p class="eyebrow">One page · read it twice · that's it</p>
+    <h1>Fix the <em>daytime</em></h1>
+    <p class="sub">No counting, no banned food, no plan you'll rebound from. One change, made at breakfast and lunch.</p>
+  </header>
+
+  <section>
+    <span class="num">01 / The diagnosis</span>
+    <h2>The night isn't the problem</h2>
+
+    <div class="bars">
+      <div class="bar">
+        <div class="bar-label">Now</div>
+        <div class="bar-track">
+          <div class="seg">1 roti</div>
+          <div class="seg">roti + salan<br>or skipped</div>
+          <div class="seg">fruit</div>
+          <div class="seg full">pizza / burger<br>+ roti</div>
+        </div>
+      </div>
+      <div class="bar">
+        <div class="bar-label">Target</div>
+        <div class="bar-track">
+          <div class="seg fed">eggs + roti</div>
+          <div class="seg fed">chicken or daal<br>+ roti + dahi</div>
+          <div class="seg ok">fruit + nuts</div>
+          <div class="seg ok">dinner, still yours</div>
+        </div>
+      </div>
+    </div>
+
+    <p>You eat almost nothing until evening and then most of the day's food arrives at once. That isn't a willpower failure — it's arithmetic. By 8pm you're running on one roti and some fruit, and no one negotiates well with a pizza in that state.</p>
+    <p class="pull">You don't need to want the pizza less. You need to arrive at 8pm not starving.</p>
+  </section>
+
+  <section>
+    <span class="num">02 / The fix</span>
+    <h2>Four blocks</h2>
+
+    <div class="block">
+      <div class="when">Morning</div>
+      <b>Add eggs to the roti</b>
+      <p>Two or three, any style. The roti alone leaves you empty by 11. Eggs plus roti holds until lunch, and this single swap does more than anything else on the page.</p>
+    </div>
+
+    <div class="block">
+      <div class="when">Office · midday</div>
+      <b>Actually eat, even when busy</b>
+      <p>This is the block that breaks everything downstream. Chicken, daal, chana or keema with your roti, and dahi alongside if you can.</p>
+      <p>If you can't stop to eat properly, keep a backup in your bag so skipping isn't the default: boiled eggs, a tin of tuna, roasted chana, or a yogurt.</p>
+    </div>
+
+    <div class="block">
+      <div class="when">Evening · before home</div>
+      <b>Eat something before the ordering decision</b>
+      <p>Fruit is good, fruit with a handful of nuts or some dahi is better. A small planned snack around 6 is what stops the 9pm decision from being made on an empty stomach.</p>
+    </div>
+
+    <div class="block keep">
+      <div class="when">Night</div>
+      <b>Dinner stays yours</b>
+      <p>Home food most nights — roti with whatever's cooked, and put something protein-heavy on the plate first.</p>
+      <p>Pizza or burgers a couple of times a week, still the same four or five slices. Not a cheat, not earned, not compensated for. Just twice instead of most nights.</p>
+    </div>
+  </section>
+
+  <section>
+    <span class="num">03 / Protein</span>
+    <h2>What counts, locally</h2>
+    <p>Aim for a palm-sized amount of something from this list at breakfast, lunch and dinner. No weighing, no app.</p>
+    <div class="proteins">
+      <div class="p-item"><span>anda</span>Eggs — 2 to 3</div>
+      <div class="p-item"><span>murghi</span>Chicken — any preparation</div>
+      <div class="p-item"><span>daal / chana</span>Lentils, chickpeas, rajma</div>
+      <div class="p-item"><span>dahi</span>Plain yogurt, unsweetened</div>
+      <div class="p-item"><span>keema / beef</span>Mince, boti, seekh</div>
+      <div class="p-item"><span>machli</span>Fish, or tinned tuna</div>
+      <div class="p-item"><span>paneer</span>Cottage cheese</div>
+      <div class="p-item"><span>emergency</span>Roasted chana, peanuts</div>
+    </div>
+    <p style="font-size:15px;color:var(--iron);margin-top:14px">Protein is also what keeps the gym work turning into muscle rather than just soreness. It's the one nutrient worth paying attention to while you're lifting.</p>
+  </section>
+
+  <section>
+    <span class="num">04 / Drinks</span>
+    <h2>The invisible one</h2>
+    <p>Liquid calories don't register as eating and don't make you full, which makes them the easiest thing on this page to change and the easiest to overlook.</p>
+    <ul class="plain">
+      <li><strong>Sugar in chai</strong> — the biggest one, because of how often it happens. Drop it by half, then to zero over a few weeks. Going cold turkey makes chai taste wrong and you'll just quit the attempt.</li>
+      <li><strong>Cola and juice</strong> — with pizza especially. Switch to water or a diet version. This alone is a meaningful chunk of your week.</li>
+      <li><strong>Lassi and milkshakes</strong> — sweet lassi is dessert. Salted or plain is fine.</li>
+      <li><strong>Water</strong> — keep a bottle at your desk. Thirst reads as hunger surprisingly often.</li>
+    </ul>
+  </section>
+
+  <section>
+    <span class="num">05 / Guardrails</span>
+    <h2>Things not to do</h2>
+    <div class="never">
+      <b>Because they cause the bounce</b>
+      <ul>
+        <li><strong>No crash dieting.</strong> You already know how that story ends for you, and you're right. Severe restriction is what builds the rebound, not weak character.</li>
+        <li><strong>Nothing is banned.</strong> The moment a food becomes forbidden it becomes the only thing you think about. Pizza stays on the menu.</li>
+        <li><strong>Don't skip meals to "save up"</strong> for a big dinner. That's the exact pattern this page exists to break.</li>
+        <li><strong>Don't weigh yourself daily.</strong> Weight swings a kilo or two on water alone. Once a week, same morning, or not at all — go by how clothes fit and what the gym log says.</li>
+        <li><strong>Don't change everything at once.</strong> Start with breakfast eggs and eating at the office. Add the drinks piece in a couple of weeks, once the first part is automatic.</li>
+      </ul>
+    </div>
+    <p style="margin-top:20px">A bad week doesn't undo anything. Nothing here needs to be done perfectly — it needs to be done most days, for months.</p>
+  </section>
+
+  <footer>
+    Companion to the gym guide · food changes the scale, training changes the shape<br>
+    General guidance, not medical or dietary advice. A doctor or dietitian can tailor this properly if you want that.
+  </footer>
+
+</div>
+</body>
+</html>

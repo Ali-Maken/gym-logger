@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gym: the first month</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Public+Sans:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --chalk:#E6E7E2;
+    --chalk-2:#DDDED8;
+    --card:#F2F2EE;
+    --ink:#191C1B;
+    --iron:#585E60;
+    --hairline:#C6C8C1;
+    --plate20:#1B5480;   /* 20 kg blue */
+    --plate25:#9E2F2F;   /* 25 kg red  */
+    --plate10:#2F6B4A;   /* 10 kg green */
+    --display:"Archivo",system-ui,sans-serif;
+    --body:"Public Sans",system-ui,sans-serif;
+    --mono:"JetBrains Mono",ui-monospace,monospace;
+  }
+
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;
+    background:var(--chalk);
+    color:var(--ink);
+    font-family:var(--body);
+    font-size:17px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .wrap{max-width:1180px;margin:0 auto;padding:0 20px 96px}
+
+  /* ---------- masthead ---------- */
+  .mast{padding:44px 0 28px;border-bottom:2px solid var(--ink)}
+  .eyebrow{
+    font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--iron);margin:0 0 14px
+  }
+  .mast h1{
+    font-family:var(--display);font-weight:800;
+    font-size:clamp(38px,10.5vw,76px);
+    line-height:.92;letter-spacing:-.03em;margin:0 0 18px;
+    text-transform:uppercase;
+  }
+  .mast h1 em{font-style:normal;color:var(--plate20)}
+  .vitals{
+    font-family:var(--mono);font-size:12px;color:var(--iron);
+    display:flex;flex-wrap:wrap;gap:6px 18px;margin:0
+  }
+  .vitals b{color:var(--ink);font-weight:700}
+
+  /* ---------- layout ---------- */
+  .cols{display:block}
+  @media(min-width:940px){
+    .cols{display:grid;grid-template-columns:190px 1fr;gap:56px;align-items:start}
+  }
+
+  /* ---------- plate-stack index (signature) ---------- */
+  .stack{
+    position:sticky;top:0;z-index:20;
+    background:var(--chalk);
+    margin:0 -20px;padding:10px 20px 12px;
+    border-bottom:1px solid var(--hairline);
+  }
+  .stack-inner{display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+  .stack-inner::-webkit-scrollbar{display:none}
+  .plate{
+    flex:0 0 auto;display:flex;align-items:center;gap:8px;
+    background:var(--chalk-2);border:1px solid var(--hairline);
+    border-left:4px solid var(--iron);
+    border-radius:3px;padding:7px 12px 7px 10px;
+    font-family:var(--display);font-weight:700;font-size:12px;
+    letter-spacing:.05em;text-transform:uppercase;
+    color:var(--iron);text-decoration:none;white-space:nowrap;
+    transition:background .15s,color .15s,border-color .15s;
+  }
+  .plate span{font-family:var(--mono);font-weight:400;font-size:10px;opacity:.65}
+  .plate:hover{color:var(--ink);background:#EFEFEB}
+  .plate.on{background:var(--ink);color:var(--chalk);border-color:var(--ink);border-left-color:var(--plate20)}
+  .plate.on span{opacity:.8}
+  .plate.danger{border-left-color:var(--plate25)}
+  .plate.danger.on{border-left-color:var(--plate25)}
+
+  @media(min-width:940px){
+    .stack{
+      margin:0;padding:36px 0 0;top:0;border-bottom:0;
+      background:transparent;
+    }
+    .stack-inner{flex-direction:column;gap:0;overflow:visible;position:relative}
+    /* the pin rail */
+    .stack-inner::before{
+      content:"";position:absolute;left:1.5px;top:6px;bottom:6px;
+      width:3px;background:var(--hairline);border-radius:2px;
+    }
+    .plate{
+      border-left-width:0;margin-left:12px;padding:9px 12px;
+      border-radius:0 3px 3px 0;position:relative;
+      border-top-color:transparent;border-bottom-width:0;
+      background:transparent;border-right:0;
+    }
+    .plate::before{
+      content:"";position:absolute;left:-12px;top:50%;transform:translateY(-50%);
+      width:6px;height:6px;background:var(--hairline);border-radius:50%;
+    }
+    .plate.on::before{background:var(--plate20);width:10px;height:10px;left:-14px}
+    .plate.danger.on::before{background:var(--plate25)}
+    .plate.on{background:var(--ink);color:var(--chalk)}
+  }
+
+  /* ---------- sections ---------- */
+  section{padding:52px 0 8px;scroll-margin-top:82px}
+  @media(min-width:940px){section{scroll-margin-top:24px}}
+  section + section{border-top:1px solid var(--hairline)}
+  .num{
+    font-family:var(--mono);font-size:11px;color:var(--iron);
+    letter-spacing:.14em;text-transform:uppercase;display:block;margin-bottom:10px
+  }
+  h2{
+    font-family:var(--display);font-weight:800;text-transform:uppercase;
+    font-size:clamp(26px,6.4vw,40px);line-height:1;letter-spacing:-.02em;
+    margin:0 0 20px
+  }
+  h3{
+    font-family:var(--display);font-weight:700;font-size:19px;
+    letter-spacing:-.01em;margin:32px 0 10px
+  }
+  p{margin:0 0 16px;max-width:64ch}
+  strong{font-weight:600}
+  a{color:var(--plate20)}
+
+  ul.plain{margin:0 0 18px;padding-left:20px;max-width:64ch}
+  ul.plain li{margin-bottom:9px}
+
+  /* ---------- rule cards ---------- */
+  .rules{display:grid;gap:12px;margin-bottom:8px}
+  @media(min-width:620px){.rules{grid-template-columns:1fr 1fr}}
+  .rule{
+    background:var(--card);border:1px solid var(--hairline);
+    border-radius:4px;padding:16px 18px
+  }
+  .rule b{
+    display:block;font-family:var(--display);font-size:15px;
+    text-transform:uppercase;letter-spacing:.02em;margin-bottom:5px
+  }
+  .rule p{margin:0;font-size:15.5px;color:var(--iron);line-height:1.5}
+
+  /* ---------- workout table ---------- */
+  .day{
+    background:var(--card);border:1px solid var(--hairline);
+    border-radius:4px;overflow:hidden;margin-bottom:22px
+  }
+  .day-head{
+    background:var(--ink);color:var(--chalk);padding:13px 18px;
+    display:flex;justify-content:space-between;align-items:baseline;gap:14px;flex-wrap:wrap
+  }
+  .day-head b{font-family:var(--display);font-size:16px;text-transform:uppercase;letter-spacing:.04em;font-weight:700}
+  .day-head i{font-family:var(--mono);font-style:normal;font-size:11.5px;opacity:.75}
+
+  .ex{
+    display:flex;align-items:flex-start;gap:13px;
+    padding:13px 18px;border-top:1px solid var(--hairline);
+    cursor:pointer;user-select:none
+  }
+  .ex:first-of-type{border-top:0}
+  .ex input{
+    appearance:none;-webkit-appearance:none;flex:0 0 auto;
+    width:20px;height:20px;margin:3px 0 0;border:1.5px solid var(--iron);
+    border-radius:3px;background:transparent;cursor:pointer;position:relative
+  }
+  .ex input:checked{background:var(--plate20);border-color:var(--plate20)}
+  .ex input:checked::after{
+    content:"";position:absolute;left:6px;top:2px;width:5px;height:10px;
+    border:solid #fff;border-width:0 2px 2px 0;transform:rotate(42deg)
+  }
+  .ex input:focus-visible{outline:2px solid var(--plate20);outline-offset:2px}
+  .ex-body{flex:1;min-width:0}
+  .ex-name{font-weight:600;line-height:1.35}
+  .ex-note{font-size:14px;color:var(--iron);line-height:1.45;margin-top:2px}
+  .ex-dose{
+    font-family:var(--mono);font-size:13px;font-weight:700;
+    white-space:nowrap;padding-top:1px
+  }
+  .ex input:checked ~ .ex-body .ex-name{text-decoration:line-through;opacity:.45}
+  .ex input:checked ~ .ex-dose{opacity:.35}
+
+  /* ---------- glossary ---------- */
+  details{
+    background:var(--card);border:1px solid var(--hairline);
+    border-radius:4px;margin-bottom:8px;overflow:hidden
+  }
+  summary{
+    cursor:pointer;padding:13px 18px;list-style:none;
+    font-family:var(--display);font-weight:700;font-size:15.5px;
+    display:flex;justify-content:space-between;gap:12px;align-items:center
+  }
+  summary::-webkit-details-marker{display:none}
+  summary::after{
+    content:"+";font-family:var(--mono);font-size:17px;color:var(--iron);flex:0 0 auto
+  }
+  details[open] summary::after{content:"–"}
+  details[open] summary{border-bottom:1px solid var(--hairline)}
+  .dd{padding:14px 18px 4px}
+  .dd p{font-size:16px}
+  .dd p:last-child{margin-bottom:14px}
+  .say{
+    font-family:var(--mono);font-size:12.5px;color:var(--plate20);
+    display:block;margin-bottom:6px
+  }
+
+  /* ---------- callouts ---------- */
+  .stop{
+    border:1px solid var(--plate25);border-left:5px solid var(--plate25);
+    background:#F6EDEC;border-radius:4px;padding:18px 20px;margin:0 0 20px
+  }
+  .stop b{
+    font-family:var(--display);text-transform:uppercase;font-size:15px;
+    letter-spacing:.03em;display:block;margin-bottom:8px;color:var(--plate25)
+  }
+  .stop p:last-child{margin-bottom:0}
+
+  .note{
+    border-left:3px solid var(--plate10);padding:2px 0 2px 16px;margin:0 0 20px;
+    color:var(--iron);font-size:16px
+  }
+  .note p:last-child{margin-bottom:0}
+
+  /* ---------- log template ---------- */
+  .log{
+    font-family:var(--mono);font-size:13px;line-height:1.9;
+    background:var(--ink);color:#D9DBD6;border-radius:4px;
+    padding:18px 20px;overflow-x:auto;white-space:pre;margin:0 0 18px
+  }
+  .log .k{color:#7FB3D8}
+
+  /* ---------- timeline ---------- */
+  .tl{border-left:2px solid var(--hairline);padding-left:20px;margin:0}
+  .tl li{list-style:none;margin-bottom:22px;position:relative}
+  .tl li::before{
+    content:"";position:absolute;left:-26px;top:8px;width:9px;height:9px;
+    background:var(--plate20);border-radius:50%
+  }
+  .tl b{
+    font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--iron);display:block;margin-bottom:3px
+  }
+
+  footer{
+    margin-top:64px;padding-top:22px;border-top:2px solid var(--ink);
+    font-family:var(--mono);font-size:12px;color:var(--iron);line-height:1.8
+  }
+
+  @media(prefers-reduced-motion:reduce){
+    *{transition:none!important;animation:none!important;scroll-behavior:auto!important}
+  }
+  html{scroll-behavior:smooth}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="mast">
+    <p class="eyebrow">Beginner protocol · built for one person</p>
+    <h1>The first<br>month <em>alone</em></h1>
+    <p class="vitals">
+      <span>5&prime;9&Prime; · 113 kg · 24</span>
+      <span><b>3</b> sessions / week</span>
+      <span><b>45</b> min each</span>
+      <span>machines only</span>
+    </p>
+  </header>
+
+  <div class="cols">
+
+    <nav class="stack" aria-label="Sections">
+      <div class="stack-inner">
+        <a class="plate" href="#start"><span>01</span>Start</a>
+        <a class="plate" href="#words"><span>02</span>Words</a>
+        <a class="plate" href="#machine"><span>03</span>Machines</a>
+        <a class="plate" href="#week1"><span>04</span>Week 1</a>
+        <a class="plate" href="#month"><span>05</span>Weeks 2–4</a>
+        <a class="plate" href="#load"><span>06</span>Loading</a>
+        <a class="plate" href="#log"><span>07</span>Logging</a>
+        <a class="plate" href="#etiquette"><span>08</span>Etiquette</a>
+        <a class="plate" href="#mistakes"><span>09</span>Mistakes</a>
+        <a class="plate danger" href="#stop"><span>10</span>Red flags</a>
+        <a class="plate" href="#expect"><span>11</span>Timeline</a>
+      </div>
+    </nav>
+
+    <main>
+
+    <!-- 01 -->
+    <section id="start">
+      <span class="num">01 / Start here</span>
+      <h2>Six rules that carry the whole month</h2>
+      <p>You already learned rule one the hard way. Your first session was every machine in the building, and it locked your arms at 90° for three days. That was a dose problem, not a weakness problem. Nothing below will do that to you.</p>
+      <div class="rules">
+        <div class="rule"><b>Leave reps in the tank</b><p>Every set should end with about 3 reps still available. Never grind to total failure this month.</p></div>
+        <div class="rule"><b>Same workout, repeated</b><p>Repetition is how you learn the movements and how you measure progress. Variety is for later.</p></div>
+        <div class="rule"><b>Write everything down</b><p>Weight and reps, every set. Next week you beat the number. That is the entire method.</p></div>
+        <div class="rule"><b>Three days a week</b><p>Non-consecutive. Mon / Wed / Fri, or Sat / Mon / Wed. Rest days are when the work becomes muscle.</p></div>
+        <div class="rule"><b>Control the weight down</b><p>Two seconds lowering, one second lifting. Slow lowering is where most of the growth comes from.</p></div>
+        <div class="rule"><b>Consistency beats intensity</b><p>Three sessions a week for six months beats six a week for three weeks. Every time.</p></div>
+      </div>
+      <div class="note">
+        <p>You are starting a new physical routine at a bodyweight that makes a baseline check worthwhile. If you haven't had blood pressure, blood sugar and a general check-up recently, it's a sensible thing to book in the next few weeks. Nothing here requires it — it's just useful to know your starting numbers.</p>
+      </div>
+    </section>
+
+    <!-- 02 -->
+    <section id="words">
+      <span class="num">02 / Vocabulary</span>
+      <h2>What people are saying</h2>
+      <p>You'll hear all of these in your first month. Tap any of them.</p>
+
+      <details><summary>Rep &amp; set</summary><div class="dd">
+        <span class="say">"three by twelve" · 3 × 12</span>
+        <p>A <strong>rep</strong> is one complete movement — push out, come back. A <strong>set</strong> is a group of reps done back to back. <span style="font-family:var(--mono);font-size:14px">3 × 12</span> means three sets of twelve reps, with rest between each.</p>
+      </div></details>
+
+      <details><summary>Rest</summary><div class="dd">
+        <p>The pause between sets. For this plan: <strong>90 seconds</strong>. Long enough to recover, short enough that you finish in 45 minutes. Use your phone timer — guessing always turns into five minutes of scrolling.</p>
+      </div></details>
+
+      <details><summary>Form</summary><div class="dd">
+        <p>Whether you're doing the movement correctly. Good form means the target muscle is doing the work, the motion is smooth, and nothing is jerking or swinging. If you have to throw your body to move the weight, the weight is too heavy.</p>
+      </div></details>
+
+      <details><summary>DOMS</summary><div class="dd">
+        <span class="say">delayed onset muscle soreness</span>
+        <p>Soreness that peaks 24–48 hours after training, not during. This is what wrecked you last week. Normal DOMS is mild stiffness that fades in two days. Arms that won't straighten is far past that, and it is not a goal to chase.</p>
+      </div></details>
+
+      <details><summary>Progressive overload</summary><div class="dd">
+        <p>The one principle everything rests on: <strong>do slightly more than last time.</strong> One more rep, or 2.5 kg more weight. Muscles only change when you keep asking for slightly more. This is also why you log everything — without a record you can't be progressive about anything.</p>
+      </div></details>
+
+      <details><summary>Compound vs isolation</summary><div class="dd">
+        <p><strong>Compound</strong> movements use several joints and lots of muscle at once — leg press, chest press, lat pulldown, row. These are the ones that matter and they go first in your session.</p>
+        <p><strong>Isolation</strong> movements work one muscle at one joint — bicep curl, triceps pushdown, lateral raise. These go last and get less volume. Your friend had you doing mostly isolation work, which is backwards.</p>
+      </div></details>
+
+      <details><summary>Warm-up set</summary><div class="dd">
+        <p>A light set before your working sets — roughly half the weight, 10 easy reps. Do one before your first exercise of each muscle group. It isn't training, it's rehearsal, and it costs 60 seconds.</p>
+      </div></details>
+
+      <details><summary>Failure &amp; "reps in reserve"</summary><div class="dd">
+        <span class="say">RIR</span>
+        <p><strong>Failure</strong> is when you physically cannot complete another rep. <strong>Reps in reserve</strong> is how many you had left when you stopped. You want <strong>RIR 3</strong> this month: stop when three more were possible. Beginners get almost all the benefit at RIR 3 with a fraction of the wreckage.</p>
+      </div></details>
+
+      <details><summary>The stack &amp; the pin</summary><div class="dd">
+        <p>On a machine, the <strong>stack</strong> is the column of numbered plates. The <strong>pin</strong> is the metal peg you push into the hole to select weight. The numbers are usually kg but on some machines they're arbitrary "levels" — which is fine, since you only ever compare a machine to itself.</p>
+      </div></details>
+
+      <details><summary>Superset &amp; drop set</summary><div class="dd">
+        <p>A <strong>superset</strong> is two exercises done back to back without rest. A <strong>drop set</strong> is finishing a set, immediately reducing the weight, and continuing. Both are intensity techniques. <strong>You don't need either this month.</strong> Mentioned only so you know what someone means.</p>
+      </div></details>
+
+      <details><summary>Spotter</summary><div class="dd">
+        <p>A person who stands over you on free weights ready to catch the bar. Since you're training alone, this is the entire reason your plan is machines: a machine can't pin you.</p>
+      </div></details>
+
+      <details><summary>Re-rack</summary><div class="dd">
+        <p>Putting weights back where you found them. Non-negotiable and the fastest way to be treated like a regular rather than a tourist.</p>
+      </div></details>
+    </section>
+
+    <!-- 03 -->
+    <section id="machine">
+      <span class="num">03 / Equipment</span>
+      <h2>Using a machine safely, alone</h2>
+      <p>Every machine has a picture or diagram on the frame showing the movement and the seat position. Read it before you sit. Then, in order:</p>
+      <ul class="plain">
+        <li><strong>Set the seat first.</strong> The handles should line up with the joint doing the work — chest height for chest press, shoulder height for shoulder press, thighs snug under the pad for pulldown. Almost every machine adjusts with a pop-pin or a lever under the seat.</li>
+        <li><strong>Write the seat number down</strong> with the exercise. Next session you sit straight down at the right height instead of experimenting.</li>
+        <li><strong>Do one rep at very light weight</strong> to check the path feels natural. If a joint pinches or clicks painfully, the seat is wrong or the machine doesn't fit you. Change one, or skip it.</li>
+        <li><strong>Full range, no lockout slam.</strong> Move through the whole motion, but don't bang your elbows or knees straight at the end.</li>
+        <li><strong>Breathe out on the effort</strong>, in on the return. Never hold your breath through a set.</li>
+      </ul>
+      <div class="note"><p>Asking gym staff to set up a machine for you is completely routine — it's what they're there for. One 10-minute walkthrough with a trainer in week 1 is worth more than any video.</p></div>
+    </section>
+
+    <!-- 04 -->
+    <section id="week1">
+      <span class="num">04 / Week 1</span>
+      <h2>One workout, three times</h2>
+      <p>Same session Monday, Wednesday, Friday. Two sets each — deliberately light. Week 1 is for learning where the machines are and how they feel, not for a challenge.</p>
+
+      <div class="day">
+        <div class="day-head"><b>Week 1 · every session</b><i>~45 min · rest 90s</i></div>
+        <label class="ex"><input type="checkbox"><span class="ex-body"><span class="ex-name">Treadmill walk</span><span class="ex-note">Flat, easy pace. This is your warm-up.</span></span><span class="ex-dose">5 min</span></label>
+        <label class="ex"><input type="checkbox"><span class="ex-body"><span class="ex-name">Leg press</span><span class="ex-note">Feet mid-platform, shoulder width. Don't let knees collapse inward.</span></span><span class="ex-dose">2 × 12</span></label>
+        <label class="ex"><input type="checkbox"><span class="ex-body"><span class="ex-name">Seated chest press</span><span class="ex-note">Handles level with mid-chest, not neck.</span></span><span class="ex-dose">2 × 12</span></label>
+        <label class="ex"><input type="checkbox"><span class="ex-body"><span class="ex-name">Lat pulldown</span><span class="ex-note">Pull to collarbone, in front of your head. Thigh pad snug.</span></span><span class="ex-dose">2 × 12</span></label>
+        <label class="ex"><input type="checkbox"><span class="ex-body"><span class="ex-name">Seated cable row</span><span class="ex-note">Chest up, pull to belly, squeeze shoulder blades.</span></span><span class="ex-dose">2 × 12</span></label>
+        <label class="ex"><input type="checkbox"><span class="ex-body"><span class="ex-name">Machine shoulder press</span><span class="ex-note">Lighter than you think. Stop before your lower back arches.</span></span><span class="ex-dose">2 × 10</span></label>
+        <label class="ex"><input type="checkbox"><span class="ex-body"><span class="ex-name">Triceps pushdown</span><span class="ex-note">Elbows pinned to your sides.</span></span><span class="ex-dose">1 × 12</span></label>
+        <label class="ex"><input type="checkbox"><span class="ex-body"><span class="ex-name">Bicep curl (machine or dumbbell)</span><span class="ex-note">No swinging. If you swing, halve the weight.</span></span><span class="ex-dose">1 × 12</span></label>
+        <label class="ex"><input type="checkbox"><span class="ex-body"><span class="ex-name">Treadmill walk, incline 5–8%</span><span class="ex-note">Brisk but you can still talk. Cool-down and cardio in one.</span></span><span class="ex-dose">10 min</span></label>
+      </div>
+      <p style="font-size:14.5px;color:var(--iron)">Ticks are just for today — they clear when you reload.</p>
+    </section>
+
+    <!-- 05 -->
+    <section id="month">
+      <span class="num">05 / Weeks 2–4</span>
+      <h2>Two workouts, alternating</h2>
+      <p>Now you split into A and B and go to three sets. Still three sessions a week, so you alternate across weeks:</p>
+      <p style="font-family:var(--mono);font-size:14px;background:var(--card);border:1px solid var(--hairline);border-radius:4px;padding:12px 16px;display:inline-block">
+        Week 2 &nbsp;A · B · A<br>Week 3 &nbsp;B · A · B<br>Week 4 &nbsp;A · B · A
+      </p>
+
+      <div class="day">
+        <div class="day-head"><b>Workout A · push &amp; legs</b><i>3 sets · rest 90s</i></div>
+        <label class="ex"><input type="checkbox"><span class="ex-body"><span class="ex-name">Treadmill or bike warm-up</span></span><span class="ex-dose">5 min</span></label>
+        <label class="ex"><input type="checkbox"><span class="ex-body"><span class="ex-name">Leg press</span><span class="ex-note">Your heaviest lift. Do it first, when you're fresh.</span></span><span class="ex-dose">3 × 12</span></label>
+        <label class="ex"><input type="checkbox"><span class="ex-body"><span class="ex-name">Seated chest press</span></span><span class="ex-dose">3 × 12</span></label>
+        <label class="ex"><input type="checkbox"><span class="ex-body"><span class="ex-name">Lat pulldown</span></span><span class="ex-dose">3 × 12</span></label>
+        <label class="ex"><input type="checkbox"><span class="ex-body"><span class="ex-name">Machine shoulder press</span></span><span class="ex-dose">3 × 10</span></label>
+        <label class="ex"><input type="checkbox"><span class="ex-body"><span class="ex-name">Triceps pushdown</span></span><span class="ex-dose">2 × 12</span></label>
+        <label class="ex"><input type="checkbox"><span class="ex-body"><span class="ex-name">Plank</span><span class="ex-note">On knees if needed. Straight line hips to shoulders.</span></span><span class="ex-dose">3 × 30s</span></label>
+        <label class="ex"><input type="checkbox"><span class="ex-body"><span class="ex-name">Incline walk</span></span><span class="ex-dose">15 min</span></label>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><b>Workout B · pull &amp; legs</b><i>3 sets · rest 90s</i></div>
+        <label class="ex"><input type="checkbox"><span class="ex-body"><span class="ex-name">Treadmill or bike warm-up</span></span><span class="ex-dose">5 min</span></label>
+        <label class="ex"><input type="checkbox"><span class="ex-body"><span class="ex-name">Leg curl</span><span class="ex-note">Hamstrings, back of the thigh.</span></span><span class="ex-dose">3 × 12</span></label>
+        <label class="ex"><input type="checkbox"><span class="ex-body"><span class="ex-name">Leg extension</span><span class="ex-note">Quads, front of the thigh.</span></span><span class="ex-dose">3 × 12</span></label>
+        <label class="ex"><input type="checkbox"><span class="ex-body"><span class="ex-name">Seated cable row</span></span><span class="ex-dose">3 × 12</span></label>
+        <label class="ex"><input type="checkbox"><span class="ex-body"><span class="ex-name">Pec deck or incline chest press</span></span><span class="ex-dose">3 × 12</span></label>
+        <label class="ex"><input type="checkbox"><span class="ex-body"><span class="ex-name">Lateral raise</span><span class="ex-note">Very light. 5 kg is a real working weight here.</span></span><span class="ex-dose">2 × 15</span></label>
+        <label class="ex"><input type="checkbox"><span class="ex-body"><span class="ex-name">Bicep curl</span></span><span class="ex-dose">2 × 12</span></label>
+        <label class="ex"><input type="checkbox"><span class="ex-body"><span class="ex-name">Plank</span></span><span class="ex-dose">3 × 30s</span></label>
+        <label class="ex"><input type="checkbox"><span class="ex-body"><span class="ex-name">Incline walk</span></span><span class="ex-dose">15 min</span></label>
+      </div>
+
+      <h3>Off days</h3>
+      <p>One 30-minute brisk walk on a non-gym day. That's it. Walking is the highest-value thing you can add at your stage, and it costs you nothing in recovery.</p>
+    </section>
+
+    <!-- 06 -->
+    <section id="load">
+      <span class="num">06 / Loading</span>
+      <h2>Picking the weight, and when to add</h2>
+      <h3>Choosing it the first time</h3>
+      <p>Pick a weight you believe you could do <strong>15</strong> reps with — then stop at 12. If 12 felt hard, it was too heavy. If you finished and thought "I could have done ten more," add weight next set. Two or three sessions of guessing and you'll know every machine's number.</p>
+      <h3>When to go up</h3>
+      <p>The rule: <strong>when you complete all sets at the top of the rep range with 3 reps still in reserve, add weight next session.</strong> On machines that's usually one pin position, or 2.5 kg on dumbbells.</p>
+      <p>Expect to add weight almost every session for the first month, then much more slowly. That early jump is your nervous system learning the movement, not muscle — it's real progress but it doesn't last at that rate, and that's normal, not a plateau.</p>
+      <h3>Warm-up sets</h3>
+      <p>Before your first leg exercise and your first upper-body exercise, do one set of 10 at about half your working weight. Don't count it in your logged sets.</p>
+    </section>
+
+    <!-- 07 -->
+    <section id="log">
+      <span class="num">07 / Logging</span>
+      <h2>The only habit that matters</h2>
+      <p>One note in your phone, one entry per session. Copy this shape:</p>
+      <div class="log"><span class="k">2026-08-18 · Workout A</span>
+Leg press      seat 4   45kg  12 / 12 / 12   easy, +weight next
+Chest press    seat 3   25kg  12 / 11 / 10
+Lat pulldown   pad 5    32kg  12 / 12 / 10
+Shoulder press seat 2   15kg  10 / 10 / 8    felt shaky
+Tri pushdown            15kg  12 / 12
+Plank                         30 / 30 / 25s
+Walk           incline 6      15 min
+Notes: knee fine. gym busy at 7pm, go 8.</div>
+      <p>Three things make it work: the <strong>seat number</strong> so setup is instant, <strong>reps per set separately</strong> (not an average) so you can see fatigue, and a <strong>one-line note</strong> so you remember what to change.</p>
+      <p>Before each exercise, look at last session's line and beat it by one rep or one pin. That single act is the whole training method.</p>
+    </section>
+
+    <!-- 08 -->
+    <section id="etiquette">
+      <span class="num">08 / Practical</span>
+      <h2>Etiquette &amp; what to bring</h2>
+      <h3>Bring</h3>
+      <ul class="plain">
+        <li>A small towel — put it on the bench and wipe the machine after.</li>
+        <li>A 1-litre water bottle. Sip through the session.</li>
+        <li>Flat shoes. Running shoes with soft heels are unstable under leg press; trainers with a flat sole are better.</li>
+        <li>Phone for timer and log. Nothing else.</li>
+      </ul>
+      <h3>Unwritten rules</h3>
+      <ul class="plain">
+        <li><strong>Don't sit on a machine to rest between sets</strong> if someone's waiting — stand up beside it.</li>
+        <li><strong>Ask "how many sets left?"</strong> to share. Working in alternately is normal and nobody minds.</li>
+        <li><strong>Don't stand directly in front of the dumbbell rack.</strong> Step back so others can reach.</li>
+        <li><strong>Wipe down what you sweat on.</strong> Every time.</li>
+        <li><strong>Nobody is watching you.</strong> Everyone is looking at their own set or their own phone. This is the single most reliable fact about gyms.</li>
+      </ul>
+      <h3>Timing</h3>
+      <p>6–9pm is peak everywhere, and waiting for machines will stretch a 45-minute session past 75. If your schedule allows, mornings or after 9pm mean you walk straight onto everything.</p>
+    </section>
+
+    <!-- 09 -->
+    <section id="mistakes">
+      <span class="num">09 / Avoid</span>
+      <h2>What derails beginners</h2>
+      <div class="rules">
+        <div class="rule"><b>Doing too much on day one</b><p>Already survived. The urge returns whenever motivation spikes — resist it.</p></div>
+        <div class="rule"><b>Chasing soreness</b><p>Soreness measures novelty, not effectiveness. Trained lifters get sore rarely and progress fastest.</p></div>
+        <div class="rule"><b>Changing the plan weekly</b><p>New exercises every session means you never see a number improve. Boredom is a feature here.</p></div>
+        <div class="rule"><b>Skipping legs</b><p>Legs are the largest muscle mass you own and the biggest driver of results. They're also the first thing beginners drop.</p></div>
+        <div class="rule"><b>Ego on the pin</b><p>Adding weight faster than form allows converts a training plan into an injury plan.</p></div>
+        <div class="rule"><b>Weighing yourself daily and panicking</b><p>Weight swings 1–2 kg on water alone. Weigh weekly, same morning, same conditions, or not at all.</p></div>
+        <div class="rule"><b>Training through joint pain</b><p>Muscle burn is fine. Sharp pain in a knee, shoulder or lower back is a stop signal, not a challenge.</p></div>
+        <div class="rule"><b>Supplements before basics</b><p>Sleep, protein at meals, and showing up three times a week outrank every powder sold at the front desk.</p></div>
+      </div>
+    </section>
+
+    <!-- 10 -->
+    <section id="stop">
+      <span class="num">10 / Safety</span>
+      <h2>When to stop and get checked</h2>
+      <div class="stop">
+        <b>Same-day medical attention</b>
+        <p>Chest pain or tightness, pain spreading to jaw or left arm, severe shortness of breath out of proportion to the effort, fainting or near-fainting, or an irregular pounding heartbeat that doesn't settle with rest.</p>
+        <p>Also: <strong>dark brown or cola-coloured urine after a heavy session</strong>, especially alongside extreme soreness and swelling. Rare, but it's the one that follows exactly the kind of session you did on day one. Worth knowing, not worth worrying about on this plan.</p>
+      </div>
+      <div class="stop">
+        <b>Stop the set, see a doctor if it persists</b>
+        <p>Sharp or stabbing joint pain, a pop or tearing sensation, numbness or tingling down an arm or leg, a lower-back pain that changes how you walk, or dizziness that returns each session.</p>
+      </div>
+      <p><strong>Normal and fine:</strong> muscle burning during a set, breathlessness that settles within a couple of minutes, mild stiffness for a day or two, feeling shaky after leg press the first few times.</p>
+    </section>
+
+    <!-- 11 -->
+    <section id="expect">
+      <span class="num">11 / Timeline</span>
+      <h2>What actually happens, and when</h2>
+      <ul class="tl">
+        <li><b>Week 1</b>Everything is awkward. You'll spend as long finding machines as using them. Mild soreness for a day. Nothing visible changes and nothing should.</li>
+        <li><b>Weeks 2–4</b>Weights climb quickly — often every session. This is coordination, not muscle, and it feels great. Sessions start finishing on time. The gym stops feeling like someone else's building.</li>
+        <li><b>Month 2</b>Strength gains slow to something steadier. Stairs and walking get noticeably easier. Clothes may fit differently before the scale moves much.</li>
+        <li><b>Month 3–6</b>Visible change, if you've kept showing up and eating reasonably. This is also where most people quit, which is precisely why most people never get here.</li>
+      </ul>
+      <h3>On food</h3>
+      <p>Training builds the strength; what you eat drives most of what the scale does. Two things need no plan and no counting: get a protein source into every meal, and stop drinking calories — sugary drinks, juice and milky tea with sugar add up faster than any session burns. Beyond that, a proper eating plan is a separate conversation worth having on its own rather than bolting onto your first month.</p>
+    </section>
+
+    <footer>
+      Built for one beginner training alone · machines only · 3× per week<br>
+      General fitness guidance, not medical advice. If anything in section 10 shows up, see a doctor.
+    </footer>
+
+    </main>
+  </div>
+</div>
+
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.plate'));
+  var map = {};
+  links.forEach(function(a){
+    var el = document.querySelector(a.getAttribute('href'));
+    if(el) map[el.id] = a;
+  });
+
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        links.forEach(function(l){ l.classList.remove('on'); });
+        var a = map[e.target.id];
+        if(a){
+          a.classList.add('on');
+          if(window.innerWidth < 940){
+            a.scrollIntoView({block:'nearest', inline:'center', behavior:'smooth'});
+          }
+        }
+      }
+    });
+  }, {rootMargin:'-15% 0px -70% 0px', threshold:0});
+
+  Object.keys(map).forEach(function(id){
+    obs.observe(document.getElementById(id));
+  });
+})();
+</script>
+</body>
+</html>

@@ -28,15 +28,17 @@ Label: wayfinder:map
 - [Architecture blueprint](issues/09-architecture-blueprint.md) — one deep `Logbook` seam over private Dexie + pure domain fns; signals-first, commit-then-signal write-through; tests = domain fns + Logbook vs fake-indexeddb.
 - [Session screen prototype](issues/08-session-screen-prototype.md) — four layouts prototyped and ALL ship as selectable `SessionView` adapters (user's call); default = Sheet; theme-token system in scope; blueprint amended accordingly.
 - [Fold decisions into SPEC.md](issues/10-fold-into-spec.md) — SPEC.md rewritten as v2, build-ready; destination reached.
-- [Research: Angular PWA on GitHub Pages, offline-first](issues/07-research-pwa-pages.md) — Angular v22; ngsw handles `/REPO/` base-href natively (never rename the repo); use hash routing over the 404.html trick; `docs/` + `.nojekyll`; ngsw cache-busts past the Pages CDN's 10-min cache; iOS home-screen apps dodge the 7-day purge and `persist()` (Safari 15.2+) blocks eviction — but keep manual export as backstop.
+- [Research: Angular PWA on GitHub Pages, offline-first](issues/07-research-pwa-pages.md) — Angular v22; ngsw handles `/REPO/` base-href natively (never rename the repo); use hash routing over the 404.html trick; `docs/` + `.nojekyll`; ngsw cache-busts past the Pages CDN's 10-min cache; iOS home-screen apps dodge the 7-day purge and `persist()` (Safari 15.2+) blocks eviction — but keep manual export as backstop. *(ngsw-specific halves superseded by the stack revision; framework-independent findings stand.)*
+- [Stack revision: Angular → Vite + React](issues/11-stack-revision-react.md) — user switched stacks 2026-08-17, before any implementation; Next.js rejected (server framework, no server here); architecture unchanged, idiom translated (signals→Zustand, ngsw→vite-plugin-pwa, `withHashLocation()`→`createHashRouter`, tests→Vitest); all other closed tickets carry over untouched.
+- [Research: Vite + React PWA on GitHub Pages, offline-first](issues/12-research-vite-pwa-pages.md) — subpath and `public/.nojekyll` confirmed config-free; `autoUpdate` requires the `virtual:pwa-register` import; kill-switch deploy must keep the SW filename; iOS `apple-touch-icon` is manual; offline-test via `vite preview` only. Corrections folded into SPEC.md's Deploy section.
 
 ## Not yet specified
 
 *(empty — all fog graduated: seed values and hint presentation folded into SPEC.md v2; Home/History design follows the theme tokens and layout identities settled by the prototype.)*
 
-## Status: DESTINATION REACHED (2026-08-16)
+## Status: DESTINATION RE-REACHED (2026-08-17)
 
-All tickets resolved. `SPEC.md` v2 is build-ready; building follows its build order, outside this map.
+Reached 2026-08-16 on the Angular stack; briefly re-opened by the stack revision to Vite + React, then re-reached the same day once the Vite PWA research closed and its corrections were folded into SPEC.md's Deploy section. All tickets resolved; `SPEC.md` v2 is build-ready on the React stack; building follows its build order, outside this map.
 
 ## Out of scope
 

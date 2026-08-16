@@ -15,3 +15,7 @@ Wrong history then feeds the hint rule, prefills, and "last:" labels.
 ## Fix direction
 
 Smallest change honoring write-through: an `uncompleteLastSet(exerciseId)` Logbook mutation surfaced as tap-a-completed-set-row → confirm remove (or a 5 s "undo" toast after each commit). Tick rows: same tap-to-untick. Spec addition — needs the user's OK on scope.
+
+## Decision (2026-08-17)
+
+**Tap logged line to remove.** A completed set line becomes tappable: tap → the entry is deleted (new Logbook mutation, write-through order preserved) and the row re-opens as a pending stepper prefilled with its values. Tick rows: tap again to untick. No toasts, no time window — corrections work at any point in the session.

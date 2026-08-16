@@ -13,3 +13,4 @@ From the 2026-08-17 hands-on browser audit of all four session layouts (phone-wi
 | [007](007-switcher-pill-overlaps-header.md) | Layout-switcher pill overlaps header title/clock | Medium | All |
 | [008](008-focus-nav-touch-targets.md) | Focus prev/next/Finish targets are 34 px tall | Medium | Focus |
 | [009](009-minor-inconsistencies.md) | Rest-state inconsistencies, guard bypass on all-done, device-check items | Low | Various |
+| [010](010-views-folder-flat-structure.md) | `views/` is flat — one folder per layout instead (code structure) | Medium | — |

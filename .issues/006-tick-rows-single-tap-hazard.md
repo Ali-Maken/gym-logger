@@ -16,3 +16,7 @@ Spec says "single tap to mark done" — the spec choice is fine *with* an undo; 
 ## Fix direction
 
 Keep single-tap but make it reversible (tap again to untick, per 005), and stop `handleTick` from clearing `selectedOverride` when the ticked row isn't the selected one.
+
+## Decision (2026-08-17)
+
+Follows 005's decision: tick rows become tap-to-toggle (tap again = untick). Also fix the selection side effect — ticking a non-selected row must not collapse the open exercise.

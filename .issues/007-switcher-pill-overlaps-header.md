@@ -17,3 +17,7 @@ The open menu additionally covers whatever is at top-center.
 ## Fix direction
 
 Give the pill a home instead of an overlay: reserve space in each layout's header (the contract could expose a slot), dock it top-right/top-left where each header has slack, or move layout switching off-canvas (e.g. into the header on tap, or a settings row) since it's a rare action mid-session.
+
+## Decision (2026-08-17)
+
+**Home picker only.** The layout picker moves to the Home screen (a `LAYOUT` row with the four options writing the existing `sessionView` pref); the floating pill and `LayoutSwitcher` are removed from the session screen entirely. The session screen carries no non-logging chrome.

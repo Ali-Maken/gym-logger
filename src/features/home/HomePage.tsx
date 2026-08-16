@@ -1,12 +1,19 @@
 import { useNavigate } from 'react-router'
-import { start, useActiveSession, useTemplates, type TemplateId } from '../../core/logbook'
+import {
+  formatDaysAgo,
+  start,
+  useActiveSession,
+  useLastFinishedAt,
+  useSuggestion,
+  useTemplates,
+  type Template,
+  type TemplateId,
+} from '../../core/logbook'
 import './home.css'
-
-// Interim home: template list + start/resume. The suggestion rule and
-// last-finished labels land in build step 5.
 
 export function HomePage() {
   const templates = useTemplates()
+  const suggested = useSuggestion()
   const active = useActiveSession()
   const navigate = useNavigate()
 
@@ -27,12 +34,36 @@ export function HomePage() {
       )}
       <div className="home-cards">
         {templates.map((t) => (
-          <button type="button" key={t.id} className="home-card" onClick={() => void handleStart(t.id)}>
-            <span className="home-card-name">{t.name}</span>
-            <span className="lbl">Start</span>
-          </button>
+          <TemplateCard key={t.id} template={t} suggested={t.id === suggested} onStart={handleStart} />
         ))}
       </div>
     </main>
+  )
+}
+
+function TemplateCard({
+  template,
+  suggested,
+  onStart,
+}: {
+  template: Template
+  suggested: boolean
+  onStart: (id: TemplateId) => Promise<void>
+}) {
+  const finishedAt = useLastFinishedAt(template.id)
+  return (
+    <button
+      type="button"
+      className={suggested ? 'home-card home-card-suggested' : 'home-card'}
+      onClick={() => void onStart(template.id)}
+    >
+      <span className="home-card-main">
+        <span className="home-card-name">{template.name}</span>
+        <span className="home-card-last mono">{formatDaysAgo(finishedAt, Date.now())}</span>
+      </span>
+      <span className={suggested ? 'home-chip home-chip-suggested' : 'home-chip lbl'}>
+        {suggested ? 'Up next' : 'Start'}
+      </span>
+    </button>
   )
 }

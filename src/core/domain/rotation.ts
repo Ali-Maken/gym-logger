@@ -15,3 +15,10 @@ export function suggestTemplate(sessions: Session[]): TemplateId {
   const last = ab.reduce((latest, s) => (s.finishedAt! > latest.finishedAt! ? s : latest))
   return last.templateId === 'a' ? 'b' : 'a'
 }
+
+/** When the template was last finished, or undefined if never. */
+export function lastFinishedAt(sessions: Session[], templateId: TemplateId): number | undefined {
+  return sessions
+    .filter((s) => s.templateId === templateId && s.finishedAt !== undefined)
+    .reduce<number | undefined>((latest, s) => (latest === undefined || s.finishedAt! > latest ? s.finishedAt : latest), undefined)
+}

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatLastResult, formatLogLine, formatTarget, topWeight } from '../format'
+import { formatDaysAgo, formatLastResult, formatLogLine, formatTarget, topWeight } from '../format'
 import type { Exercise, LoggedExercise } from '../types'
 
 const legPress: Exercise = { id: 'leg-press', name: 'Leg press', group: 'legs', measure: 'weightReps' }
@@ -66,6 +66,22 @@ describe('formatLogLine (the guide log shape)', () => {
       note: 'easy, +weight next',
     }
     expect(formatLogLine(legPress, logged)).toBe('Leg press  seat 4  45kg  12 / 12 / 12  easy, +weight next')
+  })
+})
+
+describe('formatDaysAgo', () => {
+  const noon = new Date(2026, 7, 17, 12, 0).getTime()
+
+  it('labels never, today, yesterday, and older by calendar day', () => {
+    expect(formatDaysAgo(undefined, noon)).toBe('never')
+    expect(formatDaysAgo(new Date(2026, 7, 17, 6, 0).getTime(), noon)).toBe('today')
+    expect(formatDaysAgo(new Date(2026, 7, 16, 23, 30).getTime(), noon)).toBe('yesterday')
+    expect(formatDaysAgo(new Date(2026, 7, 14, 9, 0).getTime(), noon)).toBe('3 days ago')
+  })
+
+  it('splits on midnight, not on 24-hour gaps', () => {
+    const justAfterMidnight = new Date(2026, 7, 17, 0, 10).getTime()
+    expect(formatDaysAgo(new Date(2026, 7, 16, 23, 50).getTime(), justAfterMidnight)).toBe('yesterday')
   })
 })
 

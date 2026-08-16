@@ -3,7 +3,7 @@ import { db } from './db'
 import { validateExportPayload } from './domain/exportPayload'
 import { shouldSuggestWeightIncrease } from './domain/hint'
 import { selectLastTime } from './domain/lastTime'
-import { suggestTemplate } from './domain/rotation'
+import { lastFinishedAt, suggestTemplate } from './domain/rotation'
 import type {
   Exercise,
   ExportPayload,
@@ -19,7 +19,7 @@ import type {
 // mutations (Dexie first, store second — the never-lose-data guarantee).
 // Pure display helpers and types are re-exported so features need nothing else.
 
-export { formatLastResult, formatLogLine, formatTarget, topWeight } from './domain/format'
+export { formatDaysAgo, formatLastResult, formatLogLine, formatTarget, topWeight } from './domain/format'
 export type {
   Exercise,
   LoggedExercise,
@@ -51,6 +51,8 @@ const useLogbookStore = create<LogbookState>(() => ({
 
 export const useTemplates = (): Template[] => useLogbookStore((s) => s.templates)
 export const useSuggestion = (): TemplateId => useLogbookStore((s) => suggestTemplate(s.sessions))
+export const useLastFinishedAt = (templateId: TemplateId): number | undefined =>
+  useLogbookStore((s) => lastFinishedAt(s.sessions, templateId))
 export const useActiveSession = (): Session | null => useLogbookStore((s) => s.activeSession)
 export const useExercise = (id: string): Exercise | undefined => useLogbookStore((s) => s.exercises[id])
 export const useExercises = (): Record<string, Exercise> => useLogbookStore((s) => s.exercises)

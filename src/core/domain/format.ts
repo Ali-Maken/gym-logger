@@ -53,6 +53,21 @@ export function formatLogLine(exercise: Exercise, logged: LoggedExercise): strin
   return parts.filter((p) => p !== undefined && p !== '').join('  ')
 }
 
+/** Home-card recency label: 'never', 'today', 'yesterday', 'N days ago'. Calendar days, local time. */
+export function formatDaysAgo(finishedAt: number | undefined, now: number): string {
+  if (finishedAt === undefined) return 'never'
+  const days = localDayIndex(now) - localDayIndex(finishedAt)
+  if (days <= 0) return 'today'
+  if (days === 1) return 'yesterday'
+  return `${days} days ago`
+}
+
+/* Rounding absorbs the timezone offset and DST shifts in the local-midnight timestamp. */
+function localDayIndex(ts: number): number {
+  const d = new Date(ts)
+  return Math.round(new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime() / 86_400_000)
+}
+
 /** The weight to pre-fill next time: the heaviest set of the session. */
 export function topWeight(logged: LoggedExercise): number | undefined {
   const weights = logged.sets.map((s) => s.weight).filter((w): w is number => w !== undefined)

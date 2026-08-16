@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { suggestTemplate } from '../rotation'
+import { lastFinishedAt, suggestTemplate } from '../rotation'
 import type { Session, TemplateId } from '../types'
 
 let counter = 0
@@ -46,5 +46,17 @@ describe('suggestTemplate', () => {
       session('week1', 10),
     ]
     expect(suggestTemplate(sessions)).toBe('b')
+  })
+})
+
+describe('lastFinishedAt', () => {
+  it('is undefined with no finished sessions of the template', () => {
+    expect(lastFinishedAt([], 'a')).toBeUndefined()
+    expect(lastFinishedAt([session('a'), session('b', 5)], 'a')).toBeUndefined()
+  })
+
+  it('returns the latest finish time regardless of array order', () => {
+    const sessions = [session('a', 7), session('a', 12), session('a', 3), session('b', 99)]
+    expect(lastFinishedAt(sessions, 'a')).toBe(12)
   })
 })

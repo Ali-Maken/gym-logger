@@ -47,3 +47,11 @@ export interface Session {
   exercises: LoggedExercise[]
   note?: string
 }
+
+export interface ExportPayload {
+  version: 1 // bump on schema change; import migrates old versions
+  sessions: Session[]
+  // user-modified state: chosen variants live on templates, layout/theme prefs in prefs
+  templates: Template[]
+  prefs: Record<string, unknown>
+}

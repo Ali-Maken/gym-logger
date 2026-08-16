@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
@@ -6,6 +7,9 @@ import { VitePWA } from 'vite-plugin-pwa'
 export default defineConfig({
   base: '/gym-logger/',
   build: { outDir: 'docs' },
+  test: {
+    setupFiles: ['fake-indexeddb/auto'],
+  },
   plugins: [
     react(),
     VitePWA({

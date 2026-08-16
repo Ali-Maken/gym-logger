@@ -1,0 +1,36 @@
+.stp {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-sm);
+  background: var(--color-field);
+  overflow: hidden;
+}
+
+.stp button {
+  width: 44px;
+  height: 46px;
+  font-size: 22px;
+  color: var(--color-ink-dim);
+  display: grid;
+  place-items: center;
+}
+
+.stp button:active {
+  background: var(--color-bg);
+}
+
+.stp-v {
+  min-width: 64px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.stp-v small {
+  font-size: 10px;
+  color: var(--color-ink-dim);
+  font-weight: 400;
+  display: block;
+  margin-top: -2px;
+}

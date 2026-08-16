@@ -1,0 +1,42 @@
+.home-head {
+  padding: 14px 18px 10px;
+  border-bottom: 2px solid var(--color-ink);
+}
+
+.home-head h1 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.home-resume {
+  margin: 16px 16px 0;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  font-weight: 700;
+}
+
+.home-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+}
+
+.home-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  text-align: left;
+  background: var(--color-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-md);
+  padding: 18px 16px;
+  min-height: 64px;
+}
+
+.home-card-name {
+  font-weight: 600;
+}

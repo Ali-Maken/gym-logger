@@ -8,10 +8,13 @@ import './index.css'
 
 registerSW({ immediate: true })
 void navigator.storage?.persist()
-void initLogbook()
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <RouterProvider router={router} />
-  </StrictMode>,
-)
+// Mount only once the store is loaded, so a mid-workout reload (e.g. the SW
+// auto-update) resumes straight into /session instead of bouncing home.
+void initLogbook().then(() => {
+  createRoot(document.getElementById('root')!).render(
+    <StrictMode>
+      <RouterProvider router={router} />
+    </StrictMode>,
+  )
+})

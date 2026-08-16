@@ -17,6 +17,19 @@ import type {
 
 // THE seam: the only module features may import. One store, write-through
 // mutations (Dexie first, store second — the never-lose-data guarantee).
+// Pure display helpers and types are re-exported so features need nothing else.
+
+export { formatLastResult, formatLogLine, formatTarget, topWeight } from './domain/format'
+export type {
+  Exercise,
+  LoggedExercise,
+  Measure,
+  Session,
+  SetEntry,
+  Template,
+  TemplateEntry,
+  TemplateId,
+} from './domain/types'
 
 interface LogbookState {
   templates: Template[]
@@ -40,6 +53,7 @@ export const useTemplates = (): Template[] => useLogbookStore((s) => s.templates
 export const useSuggestion = (): TemplateId => useLogbookStore((s) => suggestTemplate(s.sessions))
 export const useActiveSession = (): Session | null => useLogbookStore((s) => s.activeSession)
 export const useExercise = (id: string): Exercise | undefined => useLogbookStore((s) => s.exercises[id])
+export const useExercises = (): Record<string, Exercise> => useLogbookStore((s) => s.exercises)
 export const useLastTime = (exerciseId: string): LoggedExercise | undefined =>
   useLogbookStore((s) => selectLastTime(s.sessions, exerciseId))
 export const usePref = (key: string): unknown => useLogbookStore((s) => s.prefs[key])
@@ -165,12 +179,22 @@ export async function setPref(key: string, value: unknown): Promise<void> {
   useLogbookStore.setState((s) => ({ prefs: { ...s.prefs, [key]: value } }))
 }
 
-async function updateActive(mutate: (session: Session) => Session): Promise<void> {
-  const current = useLogbookStore.getState().activeSession
-  if (!current) throw new Error('No active session')
-  const next = mutate(current)
-  await db.sessions.put(next)
-  useLogbookStore.setState({ activeSession: next })
+// Active-session mutations are serialized so rapid interleaved writes (a
+// setup keystroke racing a set commit) can't build from a stale snapshot.
+let mutationQueue: Promise<unknown> = Promise.resolve()
+
+function updateActive(mutate: (session: Session) => Session): Promise<void> {
+  const run = async () => {
+    const current = useLogbookStore.getState().activeSession
+    if (!current) throw new Error('No active session')
+    const next = mutate(current)
+    await db.sessions.put(next)
+    useLogbookStore.setState({ activeSession: next })
+  }
+  // a failed predecessor already rejected for its own caller — still run this one
+  const task = mutationQueue.then(run, run)
+  mutationQueue = task
+  return task
 }
 
 function withLoggedExercise(

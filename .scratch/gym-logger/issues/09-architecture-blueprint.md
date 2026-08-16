@@ -1,7 +1,7 @@
 # Architecture blueprint
 
 Type: grilling
-Status: open
+Status: resolved
 
 ## Question
 
@@ -13,3 +13,13 @@ The map's standing priority: cleanest code, clean architecture, principal-archit
 - Folder structure, naming conventions, strict-mode posture, and what gets unit-tested vs left alone in a single-user app.
 
 Resolution is a short blueprint section for SPEC.md — deep modules, few seams, no ceremony a single-user offline app doesn't need.
+
+## Answer
+
+Resolved 2026-08-16 with the user — **one deep Logbook module, signals-first, two-tier tests**:
+
+- **Module structure**: a single deep `Logbook` module is the only seam components see (~10 methods/signals, zero Dexie knowledge). Inside it, as private implementation: `db.ts` (Dexie schema + seed) and `core/domain/` — pure functions holding every rule this map decided (progression hint, rotation/graduation, last-time selection, guide-format log rendering). Folders: `core/` (logbook, db, domain), `features/home|session|history` (dumb components), `app.routes.ts`.
+- **Logbook interface (gist)**: `templates()`, `suggestion()`, `activeSession()`, `start(templateId)`, `completeSet(...)`, `setSetup(...)`, `finish()`, `lastTimeFor(exerciseId)`, `hintFor(entry)`, `exportJson()`, `importJson(payload)`.
+- **Reactivity**: Angular signals at the seam; mutations are async methods that **commit to Dexie first, then update the signal** (write-through — the never-lose-data path). No RxJS, no liveQuery (single writer reacting to its own writes is pointless). The 90s rest timer is session-screen UI state, not Logbook state.
+- **Testing**: pure domain functions unit-tested thoroughly; Logbook integration-tested through its public interface against `fake-indexeddb` (write-through per set, restore atomicity); components untested by design — they're dumb, and the prototype covers look/feel.
+- Rationale in deep-module terms: three callers, one body of complexity → one seam with real leverage; the layered repo/service/store alternative was rejected as hypothetical seams (one adapter each); component-local liveQuery rejected for failing locality.

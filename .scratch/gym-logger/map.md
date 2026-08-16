@@ -25,6 +25,7 @@ Label: wayfinder:map
 - [Rotation: when does Week 1 end?](issues/04-rotation-graduation.md) — count-based: suggest Week 1 until 3 finished sessions, then A, then alternate opposite-of-last; finished = `finishedAt` set; suggestion never locks.
 - [Backup restore: import in scope?](issues/05-backup-restore.md) — yes: validate → summarize → confirm → atomic replace-all, next to export on History; export gains a `version` field.
 - [GitHub repo + Pages setup](issues/06-github-repo.md) — `Ali-Maken/gym-logger` (public) live; Pages serves https://ali-maken.github.io/gym-logger/ from `main`/`docs`; base-href `/gym-logger/` fixed forever; `gh` not installed.
+- [Architecture blueprint](issues/09-architecture-blueprint.md) — one deep `Logbook` seam over private Dexie + pure domain fns; signals-first, commit-then-signal write-through; tests = domain fns + Logbook vs fake-indexeddb.
 - [Research: Angular PWA on GitHub Pages, offline-first](issues/07-research-pwa-pages.md) — Angular v22; ngsw handles `/REPO/` base-href natively (never rename the repo); use hash routing over the 404.html trick; `docs/` + `.nojekyll`; ngsw cache-busts past the Pages CDN's 10-min cache; iOS home-screen apps dodge the 7-day purge and `persist()` (Safari 15.2+) blocks eviction — but keep manual export as backstop.
 
 ## Not yet specified

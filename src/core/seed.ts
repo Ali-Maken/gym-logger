@@ -1,0 +1,153 @@
+import type { Exercise, Template } from './domain/types'
+
+// Derived from gym-guide.html via SPEC.md's seed tables — never invent exercises.
+
+export const seedExercises: Exercise[] = [
+  {
+    id: 'warmup',
+    name: 'Treadmill or bike warm-up',
+    group: 'cardio',
+    measure: 'tick',
+    note: 'Flat, easy pace. This is your warm-up.',
+  },
+  {
+    id: 'leg-press',
+    name: 'Leg press',
+    group: 'legs',
+    measure: 'weightReps',
+    note: "Feet mid-platform, shoulder width. Don't let knees collapse inward. Heaviest lift — do it first.",
+  },
+  {
+    id: 'chest-press',
+    name: 'Seated chest press',
+    group: 'push',
+    measure: 'weightReps',
+    note: 'Handles level with mid-chest, not neck.',
+  },
+  {
+    id: 'lat-pulldown',
+    name: 'Lat pulldown',
+    group: 'pull',
+    measure: 'weightReps',
+    note: 'Pull to collarbone, in front of your head. Thigh pad snug.',
+  },
+  {
+    id: 'cable-row',
+    name: 'Seated cable row',
+    group: 'pull',
+    measure: 'weightReps',
+    note: 'Chest up, pull to belly, squeeze shoulder blades.',
+  },
+  {
+    id: 'shoulder-press',
+    name: 'Machine shoulder press',
+    group: 'push',
+    measure: 'weightReps',
+    note: 'Lighter than you think. Stop before your lower back arches.',
+  },
+  {
+    id: 'triceps-pushdown',
+    name: 'Triceps pushdown',
+    group: 'push',
+    measure: 'weightReps',
+    note: 'Elbows pinned to your sides.',
+  },
+  {
+    id: 'machine-curl',
+    name: 'Machine bicep curl',
+    group: 'pull',
+    measure: 'weightReps',
+    note: 'No swinging. If you swing, halve the weight.',
+  },
+  {
+    id: 'dumbbell-curl',
+    name: 'Dumbbell bicep curl',
+    group: 'pull',
+    measure: 'weightReps',
+    note: 'No swinging. If you swing, halve the weight.',
+  },
+  {
+    id: 'leg-curl',
+    name: 'Leg curl',
+    group: 'legs',
+    measure: 'weightReps',
+    note: 'Hamstrings, back of the thigh.',
+  },
+  {
+    id: 'leg-extension',
+    name: 'Leg extension',
+    group: 'legs',
+    measure: 'weightReps',
+    note: 'Quads, front of the thigh.',
+  },
+  { id: 'pec-deck', name: 'Pec deck', group: 'push', measure: 'weightReps' },
+  { id: 'incline-chest-press', name: 'Incline chest press', group: 'push', measure: 'weightReps' },
+  {
+    id: 'lateral-raise',
+    name: 'Lateral raise',
+    group: 'push',
+    measure: 'weightReps',
+    note: 'Very light. 5 kg is a real working weight here.',
+  },
+  {
+    id: 'plank',
+    name: 'Plank',
+    group: 'core',
+    measure: 'seconds',
+    note: 'On knees if needed. Straight line hips to shoulders.',
+  },
+  {
+    id: 'incline-walk',
+    name: 'Incline walk',
+    group: 'cardio',
+    measure: 'tick',
+    note: 'Brisk but you can still talk.',
+  },
+]
+
+export const seedTemplates: Template[] = [
+  {
+    id: 'week1',
+    name: 'Week 1',
+    entries: [
+      { exerciseId: 'warmup', sets: 1, target: 5 },
+      { exerciseId: 'leg-press', sets: 2, target: 12 },
+      { exerciseId: 'chest-press', sets: 2, target: 12 },
+      { exerciseId: 'lat-pulldown', sets: 2, target: 12 },
+      { exerciseId: 'cable-row', sets: 2, target: 12 },
+      { exerciseId: 'shoulder-press', sets: 2, target: 10 },
+      { exerciseId: 'triceps-pushdown', sets: 1, target: 12 },
+      { exerciseId: 'machine-curl', choiceIds: ['machine-curl', 'dumbbell-curl'], sets: 1, target: 12 },
+      { exerciseId: 'incline-walk', sets: 1, target: 10 },
+    ],
+  },
+  {
+    id: 'a',
+    name: 'Workout A · push & legs',
+    entries: [
+      { exerciseId: 'warmup', sets: 1, target: 5 },
+      { exerciseId: 'leg-press', sets: 3, target: 12 },
+      { exerciseId: 'chest-press', sets: 3, target: 12 },
+      { exerciseId: 'lat-pulldown', sets: 3, target: 12 },
+      { exerciseId: 'shoulder-press', sets: 3, target: 10 },
+      { exerciseId: 'triceps-pushdown', sets: 2, target: 12 },
+      { exerciseId: 'plank', sets: 3, target: 30 },
+      { exerciseId: 'incline-walk', sets: 1, target: 15 },
+    ],
+  },
+  {
+    id: 'b',
+    name: 'Workout B · pull & legs',
+    entries: [
+      { exerciseId: 'warmup', sets: 1, target: 5 },
+      { exerciseId: 'leg-curl', sets: 3, target: 12 },
+      { exerciseId: 'leg-extension', sets: 3, target: 12 },
+      { exerciseId: 'cable-row', sets: 3, target: 12 },
+      { exerciseId: 'pec-deck', choiceIds: ['pec-deck', 'incline-chest-press'], sets: 3, target: 12 },
+      { exerciseId: 'lateral-raise', sets: 2, target: 15 },
+      { exerciseId: 'machine-curl', choiceIds: ['machine-curl', 'dumbbell-curl'], sets: 2, target: 12 },
+      { exerciseId: 'plank', sets: 3, target: 30 },
+      { exerciseId: 'incline-walk', sets: 1, target: 15 },
+    ],
+  },
+]

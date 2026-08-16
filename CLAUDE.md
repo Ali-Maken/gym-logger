@@ -20,6 +20,14 @@ Offline-first Vite + React PWA for logging gym sessions. Single user, single dev
 - **Tests**: unit-test domain functions; integration-test Logbook through its public interface against `fake-indexeddb`. No component tests.
 - **Scope**: if a feature isn't in SPEC.md, don't build it.
 
+## Security rules (user-set, keep the attack surface at zero)
+
+- **No network calls, ever**: no `fetch`/XHR, no third-party CDNs, no external fonts/analytics/trackers. Everything ships in the bundle. The only network activity allowed is the service worker fetching the app's own files from GitHub Pages.
+- **Dependencies stay minimal**: react, react-dom, react-router, dexie, zustand — adding any other runtime dependency needs the user's explicit OK (each one is supply-chain surface).
+- **No secrets anywhere**: no API keys, tokens, or credentials in the repo, the bundle, or the data model. There is nothing to steal.
+- **All data stays on-device** in IndexedDB; export is user-initiated to clipboard/file only. Never add code that transmits user data.
+- **Import validates before it writes**: imported JSON is shape-checked and rejected untouched if invalid — never `eval`, never render imported strings as HTML (React's default escaping stays; no `dangerouslySetInnerHTML`).
+
 ## Repo facts
 
 - Remote: `git@github.com:Ali-Maken/gym-logger.git` (GitHub account is **Ali-Maken**; SSH key auths as it). **Never rename the repo** — base-href `/gym-logger/` is permanent (service workers break behind redirects).
